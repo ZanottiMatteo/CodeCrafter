@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#580000">
+  <title>CineCraft - Prenotazione Biglietti</title>
+  <link rel="icon" href="Icon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-content">
+      <h1 class="logo">Cine<span>Craft</span></h1>
+      <div class="user-actions">
+        <a href="#" class="btn-login"><i class="fas fa-user"></i> Accedi</a>
+        <a href="#" class="btn-register">Registrati</a>
+      </div>
+    </div>
+  </header>
+ 
+  <nav class="main-nav">
+    <ul>
+      <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="#"><i class="fas fa-film"></i> Film in programmazione</a></li>
+      <li><a href="#"><i class="fas fa-map-marker-alt"></i> Sale</a></li>
+      <li><a href="#"><i class="fas fa-ticket-alt"></i> I miei biglietti</a></li>
+      <li><a href="#"><i class="fas fa-info-circle"></i> Info</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h2>Prenota la tua esperienza cinematografica</h2>
+      <p>Scopri i migliori film in programmazione e riserva il tuo posto</p>
+    </div>
+  </div>
+
+  <section id="filtro" class="search-section">
+    <div class="container">
+      <h2><i class="fas fa-search"></i> Cerca proiezioni</h2>
+      <form class="search-form">
+        <div class="form-group">
+          <label for="film"><i class="fas fa-film"></i> Film:</label>
+          <input type="text" id="film" name="film" placeholder="Cerca un film...">
+        </div>
+        
+        <div class="form-group">
+          <label for="sala"><i class="fas fa-theater-masks"></i> Sala:</label>
+          <select id="sala" name="sala">
+            <option value="">Tutte le sale</option>
+            <option value="1">Sala 1 (Standard)</option>
+            <option value="2">Sala 2 (3D)</option>
+            <option value="3">Sala 3 (IMAX)</option>
+            <option value="4">Sala 4 (Dolby Atmos)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="data"><i class="far fa-calendar-alt"></i> Data:</label>
+          <input type="date" id="data" name="data">
+        </div>
+        
+        <div class="form-group">
+          <label for="orario"><i class="far fa-clock"></i> Orario:</label>
+          <select id="orario" name="orario">
+            <option value="">Qualsiasi orario</option>
+            <option value="morning">Mattina (9:00-12:00)</option>
+            <option value="afternoon">Pomeriggio (12:00-18:00)</option>
+            <option value="evening">Sera (18:00-24:00)</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn-search"><i class="fas fa-search"></i> Cerca</button>
+      </form>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="now-showing">
+      <h2><i class="fas fa-star"></i> Proiezioni disponibili</h2>
+      <div class="movie-grid">
+        <article class="movie-card">
+          <div class="movie-poster" style="background-image: url('https://via.placeholder.com/300x450')">
+            <span class="movie-rating">4.8 <i class="fas fa-star"></i></span>
+          </div>
+          <div class="movie-info">
+            <h3>Interstellar</h3>
+            <div class="movie-meta">
+              <span class="genre">Fantascienza</span>
+              <span class="duration">169 min</span>
+            </div>
+            <div class="screening-info">
+              <p><i class="fas fa-theater-masks"></i> Sala 2 (3D)</p>
+              <p><i class="far fa-clock"></i> 20:30 - Italiano</p>
+              <p><i class="fas fa-chair"></i> Posti disponibili: 56</p>
+            </div>
+            <div class="movie-actions">
+              <button class="btn-details"><i class="fas fa-info-circle"></i> Dettagli</button>
+              <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="movie-card">
+          <div class="movie-poster" style="background-image: url('https://via.placeholder.com/300x450')">
+            <span class="movie-rating">4.9 <i class="fas fa-star"></i></span>
+          </div>
+          <div class="movie-info">
+            <h3>Oppenheimer</h3>
+            <div class="movie-meta">
+              <span class="genre">Storico/Drammatico</span>
+              <span class="duration">180 min</span>
+            </div>
+            <div class="screening-info">
+              <p><i class="fas fa-theater-masks"></i> Sala 1 (IMAX)</p>
+              <p><i class="far fa-clock"></i> 22:00 - Inglese sott. ITA</p>
+              <p><i class="fas fa-chair"></i> Posti disponibili: 34</p>
+            </div>
+            <div class="movie-actions">
+              <button class="btn-details"><i class="fas fa-info-circle"></i> Dettagli</button>
+              <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="movie-card">
+          <div class="movie-poster" style="background-image: url('https://via.placeholder.com/300x450')">
+            <span class="movie-rating">4.5 <i class="fas fa-star"></i></span>
+          </div>
+          <div class="movie-info">
+            <h3>Dune: Parte Due</h3>
+            <div class="movie-meta">
+              <span class="genre">Fantascienza</span>
+              <span class="duration">166 min</span>
+            </div>
+            <div class="screening-info">
+              <p><i class="fas fa-theater-masks"></i> Sala 4 (Dolby Atmos)</p>
+              <p><i class="far fa-clock"></i> 21:15 - Italiano</p>
+              <p><i class="fas fa-chair"></i> Posti disponibili: 12</p>
+            </div>
+            <div class="movie-actions">
+              <button class="btn-details"><i class="fas fa-info-circle"></i> Dettagli</button>
+              <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="promotions">
+      <h2><i class="fas fa-percentage"></i> Promozioni</h2>
+      <div class="promo-cards">
+        <div class="promo-card">
+          <i class="fas fa-child"></i>
+          <h3>Martedì Bambini</h3>
+          <p>Tutti i martedì, biglietto a €5 per i bambini sotto i 12 anni</p>
+        </div>
+        <div class="promo-card">
+          <i class="fas fa-user-friends"></i>
+          <h3>Gruppi</h3>
+          <p>Sconto del 20% per gruppi di almeno 10 persone</p>
+        </div>
+        <div class="promo-card">
+          <i class="fas fa-birthday-cake"></i>
+          <h3>Compleanno</h3>
+          <p>Biglietto omaggio nel tuo compleanno!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Info</h3>
+        <ul>
+          <li><a href="#">Chi siamo</a></li>
+          <li><a href="#">Lavora con noi</a></li>
+          <li><a href="#">Contatti</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Cinema</h3>
+        <ul>
+          <li><a href="#">Sale e servizi</a></li>
+          <li><a href="#">Accessibilità</a></li>
+          <li><a href="#">Eventi speciali</a></li>
+          <li><a href="#">Regolamento</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Social</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="newsletter">
+          <h4>Iscriviti alla newsletter</h4>
+          <form>
+            <input type="email" placeholder="La tua email">
+            <button type="submit"><i class="fas fa-paper-plane"></i></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 CineCraft - Tutti i diritti riservati | P.IVA 12345678901</p>
+    </div>
+  </footer>
+</body>
+</html>
