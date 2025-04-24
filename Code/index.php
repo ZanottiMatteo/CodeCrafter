@@ -40,21 +40,21 @@
                     <label for="sala"><i class="fas fa-theater-masks"></i> Sala:</label>
                     <select id="sala" name="sala">
                         <option value="">Tutte le sale</option>
-                        <option value="1">Sala 1 (3D)</option>
-                        <option value="2">Sala 2 (3D)</option>
-                        <option value="3">Sala 3 (3D)</option>
-                        <option value="4">Sala 4 (3D)</option>
-                        <option value="4">Sala 5 (3D)</option>
-                        <option value="4">Sala 6 (3D)</option>
-                        <option value="4">Sala 7 (3D)</option>
-                        <option value="4">Sala 8 (Standard)</option>
-                        <option value="4">Sala 9 (Standard)</option>
-                        <option value="4">Sala 10 (Standard)</option>
-                        <option value="4">Sala 11 (Standard)</option>
-                        <option value="4">Sala 12 (Standard)</option>
-                        <option value="4">Sala 13 (Standard)</option>
-                        <option value="4">Sala 14 (Standard)</option>
-                        <option value="4">Sala 15 (Standard)</option>
+                        <?php
+                        include 'connect.php';
+                        
+                        try {
+                            $stmt = $conn->query("SELECT numero, tipo FROM Sala ORDER BY numero ASC");
+
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                $numero = htmlspecialchars($row['numero']);
+                                $tipo = htmlspecialchars($row['tipo']);
+                                echo "<option value='$numero'>Sala $numero ($tipo)</option>";
+                            }
+                        } catch (PDOException $e) {
+                            echo "<option disabled>Errore nel caricamento delle sale</option>";
+                        }
+                        ?>
                     </select>
                 </div>
 
