@@ -24,7 +24,8 @@ if ($filmId) {
     $orari = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode(['sale' => $sale, 'date' => $date, 'orari' => $orari]);
-} else {
-    echo json_encode(['error' => 'Film non selezionato']);
+}
+else {
+    echo json_encode(['error' => 'Nessun parametro fornito']);
 }
 ?>
