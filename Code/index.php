@@ -17,6 +17,9 @@
     <?php
     include 'header.html';
     ?>
+    <?php
+    include 'nav.html';
+    ?>
     <div class="right-content">
         <div class="hero-banner">
             <div class="hero-content">
@@ -25,9 +28,7 @@
             </div>
         </div>
     
-    <?php
-    include 'nav.html';
-    ?>
+    
     <section id="filtro" class="search-section">
         <div class="container">
             <form class="search-form">

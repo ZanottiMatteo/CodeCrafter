@@ -107,9 +107,10 @@ body {
 /* Navigation */
 #sidebar {
   position: fixed;
+  overflow: hidden;
   top: 5.5rem;
   left: 0;
-  height: 91%;
+  height: 92%;
   width: 60px;
   background-color: var(--primary-color);
   color: #fff;
@@ -121,14 +122,17 @@ body {
 }
 
 #sidebar.expanded {
-  width: 250px;
+  width: 270px;
 }
 
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+#sidebar.expanded .text {
+  opacity: 1;
 }
+
+#sidebar.expanded + #right-container {
+  margin-left: 270px;
+}
+
 
 nav ul li {
   display: grid;
@@ -148,6 +152,7 @@ nav ul li a{
   text-decoration: none;
 }
 
+
 nav ul li:hover {
   background-color: var(--primary-color-lighter);
 }
@@ -159,15 +164,12 @@ nav ul li:hover {
 }
 
 .text {
-  
+  margin-left: 8px;
   white-space: nowrap;
-  overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-#sidebar.expanded .text {
-  opacity: 1;
+  color: white;
+  font-weight: bold;
 }
 
 #togglebtn {
@@ -185,11 +187,6 @@ nav ul li:hover {
 #togglebtn:hover {
   background: var(--primary-color-lighter);
 }
-
-#sidebar.expanded + #right-container {
-  margin-left: 250px;
-}
-
 
 /* Hero Banner */
 .hero-banner {
