@@ -24,7 +24,7 @@
                 <p>Scopri i migliori film in programmazione e riserva il tuo posto</p>
             </div>
         </div>
-    </div>
+    
     <?php
     include 'nav.html';
     ?>
@@ -173,6 +173,8 @@
             </div>
         </section>
     </main>
+    </div>       
+
     <?php
     include 'footer.html';
     ?>

@@ -1,3 +1,10 @@
+const toggleBtn = document.getElementById('togglebtn');
+const sidebar = document.getElementById('sidebar');
+
+toggleBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('expanded');
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const filmInput = document.getElementById('film');
     const suggestionsContainer = document.getElementById('film-suggestions');
