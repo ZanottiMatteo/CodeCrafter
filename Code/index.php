@@ -17,6 +17,9 @@
     <?php
     include 'header.html';
     ?>
+    <?php
+    include 'nav.html';
+    ?>
     <div class="right-content">
         <div class="hero-banner">
             <div class="hero-content">
@@ -24,10 +27,8 @@
                 <p>Scopri i migliori film in programmazione e riserva il tuo posto</p>
             </div>
         </div>
-    </div>
-    <?php
-    include 'nav.html';
-    ?>
+    
+    
     <section id="filtro" class="search-section">
         <div class="container">
             <form class="search-form">
@@ -173,6 +174,8 @@
             </div>
         </section>
     </main>
+    </div>       
+
     <?php
     include 'footer.html';
     ?>

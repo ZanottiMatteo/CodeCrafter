@@ -1,3 +1,10 @@
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('togglebtn').addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('expanded');
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const filmInput = document.getElementById('film');
     const suggestionsContainer = document.getElementById('film-suggestions');
