@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
@@ -38,29 +39,25 @@
                 <form class="search-form">
                     <div class="form-group">
                         <label for="film"><i class="fas fa-film"></i> Film:</label>
-                        <input type="text" id="film" name="film" placeholder="Cerca un film..." list="film-list">
+                        <input type="text" id="film" name="film" placeholder="Cerca un film..." list="film-list" autocomplete="off">
                         <div id="film-suggestions" class="film-suggestions"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="data"><i class="far fa-calendar-alt"></i> Data:</label>
-                        <input type="date" id="data" name="data" placeholder="Seleziona una data">
+                        <input type="text" id="data" name="data" placeholder="Seleziona una data" readonly>
                     </div>
 
                     <div class="form-group">
                         <label for="orario"><i class="far fa-clock"></i> Orario:</label>
                         <select id="orario" name="orario">
                             <option value="">Seleziona un orario</option>
-                            <option value="16:00">16:00</option>
-                            <option value="18:00">18:00</option>
-                            <option value="20:00">20:00</option>
-                            <option value="22:00">22:00</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="sala"><i class="fas fa-theater-masks"></i> Sala:</label>
-                        <input type="text" id="sala" name="sala" placeholder="Sala">
+                        <div id="sala" class="sala"></div>
                     </div>
                     <button type="submit" class="btn-search"><i class="fas fa-search"></i></button>
                 </form>
