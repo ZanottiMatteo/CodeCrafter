@@ -65,7 +65,7 @@
         </section>
         <main class="container">
             <section class="now-showing">
-                <h2><i class="fas fa-star"></i> Proiezioni disponibili</h2>
+                <h2><i class="fas fa-star"></i> Proiezioni consigliate</h2>
                 <div class="carousel-wrapper">
                     <button class="carousel-btn prev" aria-label="Precedente">‹</button>
                     <div class="movie-carousel">
@@ -73,72 +73,101 @@
                         include 'connect.php';
 
                         $imgData = json_decode(file_get_contents('film_images.json'), true);
+                        $startOfWeek = strtotime('monday this week');
+                        $endOfWeek = strtotime('sunday this week');
+                        $dates = [];
 
-                        $sql = "
-    SELECT 
-        f.codice,
-        f.titolo, 
-        f.durata, 
-        f.lingua, 
-        f.anno, 
-        s.numero AS sala_numero, 
-        s.dim AS sala_dim, 
-        s.numPosti AS sala_numPosti, 
-        s.numFile AS sala_numFile, 
-        s.tipo AS sala_tipo, 
-        s.numPostiPerFila AS sala_numPostiPerFila, 
-        p.data AS proiezione_data, 
-        p.ora AS proiezione_ora, 
-        p.numProiezione, 
-        p.filmProiettato
-    FROM 
-        Proiezione p
-    JOIN 
-        Film f ON p.filmProiettato = f.codice
-    JOIN 
-        Sala s ON p.sala = s.numero
-    ORDER BY 
-        p.data ASC, p.ora ASC
-    LIMIT 6
-";
+                        for ($i = $startOfWeek; $i <= $endOfWeek; $i = strtotime("+1 day", $i)) {
+                            $date = date("d/m/Y", $i);
+                            $dayOfWeek = date('N', $i);
+                            if ($dayOfWeek != 2 && $dayOfWeek != 3) {
+                                $dates[] = $date;
+                            }
+                        }
 
-                        $stmt = $conn->prepare($sql);
-                        $stmt->execute();
+                        foreach ($dates as $date) {
+                            $sql = "
+                                SELECT 
+                                    f.codice,
+                                    f.titolo, 
+                                    f.durata, 
+                                    f.lingua, 
+                                    f.anno, 
+                                    s.numero AS sala_numero, 
+                                    s.dim AS sala_dim, 
+                                    s.numPosti AS sala_numPosti, 
+                                    s.numFile AS sala_numFile, 
+                                    s.tipo AS sala_tipo, 
+                                    s.numPostiPerFila AS sala_numPostiPerFila, 
+                                    p.data AS proiezione_data, 
+                                    p.ora AS proiezione_ora, 
+                                    p.numProiezione, 
+                                    p.filmProiettato
+                                FROM 
+                                    Proiezione p
+                                JOIN 
+                                    Film f ON p.filmProiettato = f.codice
+                                JOIN 
+                                    Sala s ON p.sala = s.numero
+                                WHERE 
+                                    p.data = :date  -- Parametro per la data
+                                ORDER BY 
+                                    p.data ASC, p.ora ASC
+                                LIMIT 1
+                            ";
 
-                        if ($stmt->rowCount() > 0) {
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bindParam(':date', $date);
+                            $stmt->execute();
+
+                            $films = [];
+
                             while ($film = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 $titolo = $film['titolo'];
                                 $codice = $film['codice'];
                                 $imgUrl = $imgData[$codice] ?? 'default.jpg';
 
-                                echo '
-                            <article class="movie-card">
-                                <div class="movie-poster" style="background-image: url(\'' . $imgUrl . '\')">
-                                    <span class="movie-rating">4.8 <i class="fas fa-star"></i></span>
-                                </div>
-                                <div class="movie-info">
-                                    <h3>' . htmlspecialchars($titolo) . '</h3>
-                                    <div class="movie-meta">
-                                        <span class="genre">' . htmlspecialchars($film['lingua']) . '</span>
-                                        <span class="duration">' . htmlspecialchars($film['durata']) . ' min</span>
-                                    </div>
-                                    <div class="screening-info">
-                                        <p><i class="fas fa-theater-masks"></i> Sala ' . htmlspecialchars($film['sala_numero']) . ' (' . htmlspecialchars($film['sala_tipo']) . ')</p>
-                                        <p><i class="far fa-clock"></i> ' . htmlspecialchars($film['proiezione_ora']) . ' - ' . htmlspecialchars($film['lingua']) . '</p>
-                                        <p><i class="fas fa-chair"></i> Posti disponibili: ' . htmlspecialchars($film['sala_numPosti']) . '</p>
-                                    </div>
-                                    <div class="movie-actions">
-                                        <button class="btn-details"><i class="fas fa-info-circle"></i> Dettagli</button>
-                                        <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
-                                    </div>
-                                </div>
-                            </article>';
+                                if (!isset($films[$codice])) {
+                                    $films[$codice] = [
+                                        'titolo' => $titolo,
+                                        'imgUrl' => $imgUrl,
+                                        'lingua' => $film['lingua'],
+                                        'durata' => $film['durata'],
+                                        'sala_numPosti' => $film['sala_numPosti'],
+                                    ];
+                                }
                             }
-                        } else {
-                            echo '<p>Nessun film in programmazione questa settimana.</p>';
+                            if (!empty($films)) {
+                                foreach ($films as $filmData) {
+                                    echo '
+                                        <article class="movie-card">
+                                            <div class="movie-poster" style="background-image: url(\'' . $filmData['imgUrl'] . '\')"></div>
+                                            <div class="movie-info">
+                                                <h3>' . htmlspecialchars($filmData['titolo']) . '</h3>
+                                                <div class="movie-meta">
+                                                    <span class="genre">' . htmlspecialchars($filmData['lingua']) . '</span>
+                                                    <span class="duration">' . htmlspecialchars($filmData['durata']) . ' min</span>
+                                                </div>
+                                                <div class="screening-info">
+                                                    <p><i class="fas fa-chair"></i> Posti disponibili: ' . htmlspecialchars($filmData['sala_numPosti']) . '</p>
+                                                    <p><i class="fas fa-calendar"></i>' . htmlspecialchars($date) . '</p>
+                                                </div>
+                                                <div class="movie-actions">
+                                                    <button class="btn-details"><i class="fas fa-info-circle"></i> Dettagli</button>
+                                                    <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
+                                                </div>
+                                            </div>
+                                        </article>';
+                                }
+                            } else {
+                                echo "<p>Nessun film in programmazione per il giorno " . $date . ".</p>";
+                            }
                         }
                         $conn = null;
                         ?>
+                        <div class="load-more">
+                            <button class="btn-load-more">Altro...</button>
+                        </div>
                     </div>
                     <button class="carousel-btn next" aria-label="Successivo">›</button>
             </section>
