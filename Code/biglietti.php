@@ -24,9 +24,14 @@
   include 'nav.html';
   ?>
   <div class="right-content">
+    <div class="hero-banner">
+      <div class="hero-content">
+          <h2>Acquista i bigletti per i migliori Film</h2>
+          <p>Seleziona il film, scegli l’orario e prenota il tuo posto in sala</p>
+      </div>
+    </div>
     <div class="container">
       <div class="centralbar">
-        <h2>Prenota la tua esperienza cinematografica</h2>
         <div class="booking-steps">
           <div class="step active">1. Scegli il film</div>
           <div class="step">2. Seleziona orario</div>
@@ -58,16 +63,6 @@
         </div>
       </div>
 
-      <div class="price-info">
-        <h3>Tariffe:</h3>
-        <ul>
-          <li>Intero: €12.00</li>
-          <li>Ridotto (under 14): €8.00</li>
-          <li>Pomeridiano: €10.00</li>
-          <li>VIP: €18.00</li>
-        </ul>
-      </div>
-
       <div class="main-content">
         <div class="screen">SCHERMO</div>
         <div class="seat-legend">
@@ -83,6 +78,10 @@
             <div class="seat-sample occupied"></div>
             <span>Occupato</span>
           </div>
+          <div class="legend-item">
+            <div class="seat-sample vip"></div>
+            <span>VIP</span>
+          </div>
         </div>
 
         <div class="seats-grid">
@@ -94,7 +93,8 @@
         <h3>Il tuo ordine:</h3>
         <ul class="selected-seats"></ul>
         <div class="total-price">
-          Totale: €<span id="total">0.00</span>
+          <span class="rating">Totale (€):</span>
+          <span id="total"> 0.00</span>
         </div>
         <div class="promo-section">
           <input type="text" placeholder="Inserisci codice promozionale">

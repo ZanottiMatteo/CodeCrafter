@@ -42,8 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
       card.classList.add('selected', 'pulse');
       bookingState.selectedMovie = card.querySelector('h3').textContent;
       updateSteps(1);
-      animateConfetti();
-      playSound('select');
     });
   });
 
@@ -55,14 +53,13 @@ document.addEventListener('DOMContentLoaded', function () {
       bookingState.selectedTime = slot.textContent;
       generateSeats();
       updateSteps(2);
-      playSound('time');
     });
   });
 
-  // Generazione posti con COVID-safe
+
   function generateSeats() {
     uiElements.seatsGrid.innerHTML = '';
-    const rows = 6, cols = 8;
+    const rows = 20, cols = 10;
     const occupiedSeats = getOccupiedSeats();
 
     for (let row = 0; row < rows; row++) {
@@ -102,14 +99,16 @@ document.addEventListener('DOMContentLoaded', function () {
     if (seat.classList.contains('selected')) {
       bookingState.selectedSeats.push({ number: seatNumber, price: price });
       bookingState.totalPrice += price;
-      applyCovidDistance(seatNumber);
+      updateSteps(3);
     } else {
       bookingState.selectedSeats = bookingState.selectedSeats.filter(s => s.number !== seatNumber);
       bookingState.totalPrice -= price;
+      if (bookingState.totalPrice == 0) {
+        updateSteps(2);
+      }
     }
 
     updateCart();
-    playSound('seat');
   }
 
   // Funzioni di supporto
@@ -123,26 +122,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getOccupiedSeats() {
     // Esempio: recupera posti occupati dal server o usa valori fissi
-    return ['A3', 'B5', 'C2', 'D4'];
+    return [];
   }
 
-  function applyCovidDistance(selectedSeat) {
-    const [row, col] = [selectedSeat[0], parseInt(selectedSeat.slice(1))];
-    const adjacentSeats = [
-      `${row}${col - 1}`,
-      `${row}${col + 1}`,
-      `${String.fromCharCode(row.charCodeAt(0) - 1)}${col}`,
-      `${String.fromCharCode(row.charCodeAt(0) + 1)}${col}`
-    ];
-
-    adjacentSeats.forEach(seat => {
-      const seatElement = [...document.querySelectorAll('.seat')].find(s => s.textContent === seat);
-      if (seatElement && !seatElement.classList.contains('occupied')) {
-        seatElement.classList.add('blocked');
-        seatElement.title = "Posto bloccato per distanziamento COVID";
-      }
-    });
-  }
 
   // Gestione promozioni
   document.querySelector('.apply-promo').addEventListener('click', () => {
@@ -206,18 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function animateConfetti() {
-    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'];
-    for (let i = 0; i < 50; i++) {
-      const confetti = document.createElement('div');
-      confetti.className = 'confetti';
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      confetti.style.left = Math.random() * 100 + 'vw';
-      confetti.style.animation = `confetti-fall ${Math.random() * 3 + 2}s linear`;
-      document.body.appendChild(confetti);
-    }
-  }
-
   function showCustomAlert(icon, title, text = '') {
     Swal.fire({
       icon: icon,
@@ -231,12 +201,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function playSound(type) {
-    const audio = new Audio();
-    audio.src = type === 'seat' ? 'sounds/seat.mp3' :
-      type === 'time' ? 'sounds/time.mp3' : 'sounds/select.mp3';
-    audio.play();
-  }
 
   function resetBooking() {
     bookingState = {
@@ -257,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateSteps(currentStep) {
     uiElements.steps.forEach((step, index) => {
       step.classList.toggle('active', index <= currentStep);
-      step.style.transform = index === currentStep ? 'scale(1.1)' : 'scale(1)';
+      step.style.transform = index === currentStep ? 'scale(1.3)' : 'scale(1)';
     });
   }
 
