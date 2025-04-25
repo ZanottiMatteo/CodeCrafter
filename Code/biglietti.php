@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="biglietti.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="biglietti.js"></script>
+  <script src="js/nav.js"></script>
 </head>
 
 <body>
@@ -80,7 +84,7 @@
             <span>Occupato</span>
           </div>
         </div>
-        
+
         <div class="seats-grid">
           <!-- Posti generati dinamicamente via JavaScript -->
         </div>
@@ -97,11 +101,6 @@
           <button class="apply-promo">Applica</button>
         </div>
         <button class="checkout-button">Procedi al pagamento</button>
-      </div>
-
-      <div class="safety-info">
-        <h4>Misure di sicurezza COVID-19:</h4>
-        <p>I posti vengono automaticamente distanziati secondo le normative vigenti.</p>
       </div>
     </div>
   </div>
