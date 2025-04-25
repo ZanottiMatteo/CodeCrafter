@@ -36,7 +36,7 @@
           <div class="step active">1. Scegli il film</div>
           <div class="step">2. Seleziona orario</div>
           <div class="step">3. Scegli i posti</div>
-          <div class="step">4. Conferma</div>
+          <div class="step">4. Pagamento</div>
         </div>
       </div>
 
