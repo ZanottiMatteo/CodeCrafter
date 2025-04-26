@@ -166,7 +166,7 @@
                         $conn = null;
                         ?>
                         <div class="load-more">
-                            <button class="btn-load-more">Altro...</button>
+                            <a href="film.php" class="btn-load-more">Altro...</a>
                         </div>
                     </div>
                     <button class="carousel-btn next" aria-label="Successivo">›</button>
