@@ -1,7 +1,7 @@
 /* Hero Banner */
 .hero-banner {
     margin-top: 5rem;
-    background: linear-gradient(#750000, #ff0000), url('https://via.placeholder.com/1920x600') center/cover no-repeat;
+    background: linear-gradient(#750000, #ff0000),  center/cover no-repeat;
     color: white;
     padding: 5rem 0 5rem 0;
     width: auto;
@@ -103,8 +103,8 @@
     background: #450000;
 }
 
-/* Showtime Picker */
-.showtime-picker {
+/* Datetime Picker */
+.datetime-picker {
     background-color: var(--dark-color);
     padding: 2rem;
     margin: 2rem 0;
@@ -112,13 +112,21 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.showtime-picker h3 {
+.datetime-picker h3 {
     color: #fff;
     margin-bottom: 1.5rem;
     font-size: 1.25rem;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
+}
+
+.data-picker input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  font-size: 1rem;
+
 }
 
 .time-slots {
