@@ -209,7 +209,7 @@ body.no-scroll {
   position: relative;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
   max-width: 960px;
 }
 
@@ -230,26 +230,31 @@ body.no-scroll {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 2rem;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  font-size: 4rem;
+  color: #5f0000;
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
   z-index: 2;
-  transition: background 0.3s;
+  transition: color 0.3s;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%
 }
 
 .carousel-btn:hover {
-  background: #ff0000;
+  background: none;
+  color: #ff0000;
 }
 
 .carousel-btn.prev {
-  left: 20px;
+  left: -60px;
 }
 
 .carousel-btn.next {
-  right: 20px;
+  right: -60px;
 }
 
 .movie-card {
@@ -354,31 +359,49 @@ body.no-scroll {
 }
 
 .btn-book {
-  background-color: var(--primary-color-lighter);
-  color: white;
+  background-color: #5f0000;
+  color: #ffffff;
 }
 
 .btn-book:hover {
-  background-color: #ff6b6b;
-}
-
-.btn-load-more {
-  display: block;
-  margin: 260px auto 20px auto;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  color: rgb(0, 0, 0);
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  text-align: center;
-  border-radius: 12px;
-  text-decoration: none;
-}
-
-.btn-load-more:hover {
   background-color: #ff0000;
-  color: #ffffff
+}
+
+.load-more-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 300px;
+  border: 2px dashed var(--primary-color);
+  background: none;
+  text-decoration: none;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.load-more-card .more-content {
+  text-align: center;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.load-more-card .more-content i {
+  font-size: 2rem;
+}
+
+.load-more-card:hover {
+  background: rgba(255, 0, 0, 0.1);
+  border-color: #ff0000;
+  color: #ff0000;
+}
+
+.load-more-card:hover .more-content {
+  color: #ff0000;
 }
 
 /* Promotions */

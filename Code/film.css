@@ -129,7 +129,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    overflow: hidden;
+    overflow: visible;
     max-width: 960px;
 }
 
@@ -138,8 +138,9 @@
     gap: 1.5rem;
     padding: 1rem 0;
     transition: transform 0.5s ease;
-    overflow-x: hidden;
+    overflow-x: auto;
     scrollbar-width: none;
+    scroll-behavior: smooth;
 }
 
 .movie-carousel::-webkit-scrollbar {
@@ -229,24 +230,29 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 2rem;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
+    font-size: 4rem;
+    color: #5f0000;
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
     z-index: 2;
-    transition: background 0.3s;
+    transition: color 0.3s;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%
 }
 
 .carousel-btn:hover {
-    background: #ff0000;
+    background: none;
+    color: #ff0000
 }
 
 .carousel-btn.prev {
-    left: 20px;
+    left: -60px;
 }
 
 .carousel-btn.next {
-    right: 20px;
+    right: -60px;
 }

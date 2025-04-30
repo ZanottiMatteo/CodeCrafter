@@ -166,11 +166,15 @@
                         }
                         $conn = null;
                         ?>
-                        <div class="load-more">
-                            <a href="film.php" class="btn-load-more">Altro...</a>
-                        </div>
+                        <a href="film.php" class="movie-card load-more-card">
+                            <div class="more-content">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Altri film</span>
+                            </div>
+                        </a>
                     </div>
                     <button class="carousel-btn next" aria-label="Successivo">›</button>
+                </div>
             </section>
 
             <section class="promotions">
