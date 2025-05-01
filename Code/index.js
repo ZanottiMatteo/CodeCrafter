@@ -184,17 +184,85 @@ document.addEventListener("DOMContentLoaded", function () {
     const carousel = document.querySelector(".movie-carousel");
     const prevBtn = document.querySelector(".carousel-btn.prev");
     const nextBtn = document.querySelector(".carousel-btn.next");
-
-    const scrollAmount = 320;
+    const scrollAmt = 320;
 
     prevBtn.addEventListener("click", () => {
-        carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        carousel.scrollBy({ left: -scrollAmt, behavior: "smooth" });
+    });
+    nextBtn.addEventListener("click", () => {
+        carousel.scrollBy({ left: scrollAmt, behavior: "smooth" });
     });
 
-    nextBtn.addEventListener("click", () => {
-        carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    const modal = document.getElementById("movieModal");
+    const modalBody = document.getElementById("modalBody");
+    const modalClose = document.getElementById("modalClose");
+
+    carousel.addEventListener("click", function (e) {
+        const btn = e.target.closest(".btn-details");
+        if (!btn) return;
+        e.preventDefault();
+
+        const filmId = btn.dataset.filmId;
+        const filmDate = btn.dataset.filmDate;
+        if (!filmId || !filmDate) return;
+
+        fetch(`movie_details.php?film_id=${encodeURIComponent(filmId)}&film_date=${encodeURIComponent(filmDate)}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Network error");
+                return res.text();
+            })
+            .then(html => {
+                modalBody.innerHTML = html;
+                document.body.classList.add("no-scroll");
+                modal.style.display = "flex";
+            })
+            .catch(() => {
+                modalBody.innerHTML = "<p>Errore nel recuperare i dettagli.</p>";
+                document.body.classList.add("no-scroll");
+                modal.style.display = "flex";
+            });
+    });
+
+    function closeModal() {
+        modal.style.display = "none";
+        document.body.classList.remove("no-scroll");
+    }
+    modalClose.addEventListener("click", closeModal);
+    modal.addEventListener("click", e => {
+        if (e.target === modal) closeModal();
+    });
+
+    const tooltip = document.getElementById("salaTooltip");
+
+    modalBody.addEventListener("mouseover", e => {
+        const item = e.target.closest(".showtime-item");
+        if (!item) return;
+
+        const d = item.dataset;
+        tooltip.innerHTML = `
+        <strong>Sala ${d.numero} – ${d.tipo}</strong><br>
+        Dimensioni schermo: ${d.dim}"<br>
+        Posti totali: ${d.posti}<br>
+        File: ${d.file}<br>
+        Posti per fila: ${d.postiFila}
+      `;
+        const rect = item.getBoundingClientRect();
+        tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + "px";
+        tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + "px";
+        tooltip.style.display = "block";
+    });
+
+    modalBody.addEventListener("mouseout", e => {
+        if (e.target.closest(".showtime-item")) {
+            tooltip.style.display = "none";
+        }
     });
 });
+
+
+
+
+
 
 
 

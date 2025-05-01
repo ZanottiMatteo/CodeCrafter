@@ -130,6 +130,7 @@
 
                                 if (!isset($films[$codice])) {
                                     $films[$codice] = [
+                                        'codice' => $codice,
                                         'titolo' => $titolo,
                                         'imgUrl' => $imgUrl,
                                         'lingua' => $film['lingua'],
@@ -154,7 +155,12 @@
                                                     <p><i class="fas fa-calendar"></i>' . htmlspecialchars($date) . '</p>
                                                 </div>
                                                 <div class="movie-actions">
-                                                    <button class="btn-details"><i class="fas fa-info-circle"></i> Dettagli</button>
+                                                    <button
+                                                        class="btn-details"
+                                                        data-film-id="' . htmlspecialchars($codice, ENT_QUOTES) . '"
+                                                        data-film-date="' . htmlspecialchars($date, ENT_QUOTES) . '">
+                                                        <i class="fas fa-info-circle"></i> Dettagli
+                                                    </button>
                                                     <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
                                                 </div>
                                             </div>
@@ -198,6 +204,16 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <div id="movieModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <button id="modalClose">&times;</button>
+            <div id="modalBody">
+                <!-- Qui arriveranno i dettagli via AJAX -->
+            </div>
+        </div>
+        <div id="salaTooltip" class="sala-tooltip" style="display:none;"></div>
     </div>
 
     <?php

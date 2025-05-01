@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="film.js"></script>
+  <script src="js/nav.js"></script>
 </head>
 
 <body>
@@ -25,34 +26,50 @@
         <p>Seleziona la data e scegli il film</p>
       </div>
     </div>
-    <div class="container">
-      <div class="centralbar">
-        <div class="booking-steps">
-          <div class="step">
+
+    <section id="filtro" class="search-section">
+      <div class="container">
+        <form class="search-form" method="get" action="">
+          <div class="form-group">
             <label for="start-date">Data iniziale:</label>
-            <input type="date" id="start-date" name="start-date">
+            <input type="date" id="start-date" name="start-date"
+              value="<?= htmlspecialchars($_GET['start-date'] ?? '') ?>">
           </div>
-          <div class="step">
+          <div class="form-group">
             <label for="end-date">Data finale:</label>
-            <input type="date" id="end-date" name="end-date">
+            <input type="date" id="end-date" name="end-date" value="<?= htmlspecialchars($_GET['end-date'] ?? '') ?>">
           </div>
-        </div>
+          <button type="submit" class="btn-search"><i class="fas fa-search"></i></button>
+        </form>
       </div>
+    </section>
+
+    <div class="container">
       <div class="movies-grid">
         <?php
         include 'connect.php';
 
         $imgData = json_decode(file_get_contents('film_images.json'), true);
-        $startOfWeek = strtotime('monday this week');
-        $endOfWeek = strtotime('sunday this week');
-        $dates = [];
-
-        for ($i = $startOfWeek; $i <= $endOfWeek; $i = strtotime("+1 day", $i)) {
-          $date = date("d/m/Y", $i);
-          $dayOfWeek = date('N', $i);
-          if ($dayOfWeek != 2 && $dayOfWeek != 3) {
-            $dates[] = $date;
+        if (!empty($_GET['start-date']) && !empty($_GET['end-date'])) {
+          $startTs = strtotime($_GET['start-date']);
+          $endTs = strtotime($_GET['end-date']);
+          if ($startTs > $endTs) {
+            list($startTs, $endTs) = [$endTs, $startTs];
           }
+        } else {
+          $startTs = strtotime('monday this week');
+          $endTs = strtotime('sunday this week');
+        }
+
+        $dates = [];
+        for ($ts = $startTs; $ts <= $endTs; $ts = strtotime('+1 day', $ts)) {
+          $dow = (int) date('N', $ts);
+
+          if ($dow === 2 || $dow === 3) {
+            continue;
+          }
+
+          $dates[] = date('d/m/Y', $ts);
         }
 
         foreach ($dates as $date) {
