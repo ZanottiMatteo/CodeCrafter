@@ -22,8 +22,6 @@
 <body>
     <?php
     include 'header.html';
-    ?>
-    <?php
     include 'nav.html';
     ?>
     <div class="right-content">

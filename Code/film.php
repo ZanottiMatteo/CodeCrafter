@@ -31,12 +31,12 @@
       <div class="container">
         <form class="search-form" method="get" action="">
           <div class="form-group">
-            <label for="start-date">Data iniziale:</label>
+            <label for="start-date"><i class="far fa-calendar-alt"></i>Data iniziale:</label>
             <input type="date" id="start-date" name="start-date"
               value="<?= htmlspecialchars($_GET['start-date'] ?? '') ?>">
           </div>
           <div class="form-group">
-            <label for="end-date">Data finale:</label>
+            <label for="end-date"><i class="far fa-calendar-alt"></i>Data finale:</label>
             <input type="date" id="end-date" name="end-date" value="<?= htmlspecialchars($_GET['end-date'] ?? '') ?>">
           </div>
           <button type="submit" class="btn-search"><i class="fas fa-search"></i></button>
