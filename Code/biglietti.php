@@ -1,19 +1,11 @@
 <?php
-// biglietti.php
-
-// Includi header e navigazione
-include 'header.html';
-include 'nav.html';
-
-// 1) Recupera i parametri film, date e orario dalla query-string
-$filmId    = isset($_GET['film']) ? intval($_GET['film']) : 0;
+$filmId = isset($_GET['film']) ? intval($_GET['film']) : 0;
 $dateParam = isset($_GET['date']) ? $_GET['date'] : '';
-$timeParam = isset($_GET['orario']) ? $_GET['orario'] : '';  // orario potrebbe non esserci
+$timeParam = isset($_GET['orario']) ? $_GET['orario'] : '';
 
-// 2) Connessione al DB e recupero dati film
 require 'connect.php';
 $stmt = $conn->prepare(
-    "SELECT titolo, durata, lingua
+  "SELECT titolo, durata, lingua
      FROM Film
      WHERE codice = :id"
 );
@@ -21,24 +13,22 @@ $stmt->bindValue(':id', $filmId, PDO::PARAM_INT);
 $stmt->execute();
 $filmData = $stmt->fetch(PDO::FETCH_ASSOC) ?: ['titolo' => '', 'durata' => '', 'lingua' => ''];
 
-// 3) Recupero URL locandina da JSON
-$imgData   = json_decode(file_get_contents('film_images.json'), true);
+$imgData = json_decode(file_get_contents('film_images.json'), true);
 $posterUrl = $imgData[$filmId] ?? 'default.jpg';
 
-// 4) Recupero orari disponibili per film e data
 $times = [];
 if ($filmId && $dateParam) {
-    $stmt = $conn->prepare(
-        "SELECT ora
+  $stmt = $conn->prepare(
+    "SELECT ora
          FROM Proiezione
          WHERE filmProiettato = :id
            AND data = :date
          ORDER BY ora ASC"
-    );
-    $stmt->bindValue(':id', $filmId, PDO::PARAM_INT);
-    $stmt->bindValue(':date', $dateParam);
-    $stmt->execute();
-    $times = $stmt->fetchAll(PDO::FETCH_COLUMN);
+  );
+  $stmt->bindValue(':id', $filmId, PDO::PARAM_INT);
+  $stmt->bindValue(':date', $dateParam);
+  $stmt->execute();
+  $times = $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
 $conn = null;
@@ -46,6 +36,7 @@ $conn = null;
 
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,8 +48,18 @@ $conn = null;
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="biglietti.js"></script>
+  <script src="js/nav.js"></script>
 </head>
+
 <body>
+  <?php
+  include 'header.html';
+  include 'nav.html';
+  ?>
   <div class="right-content">
     <div class="hero-banner">
       <div class="hero-content">
@@ -77,7 +78,6 @@ $conn = null;
         </div>
       </div>
 
-      <!-- Movie Selection -->
       <div class="movie-selection">
         <div class="movie-card selected-movie">
           <img src="<?= htmlspecialchars($posterUrl) ?>" alt="Locandina <?= htmlspecialchars($filmData['titolo']) ?>">
@@ -89,18 +89,19 @@ $conn = null;
         </div>
       </div>
 
-      <!-- Date & Time Picker -->
       <div class="datetime-picker">
         <div class="data-picker">
           <h3>Giorno:</h3>
-          <input type="text" id="data" name="date" value="<?= htmlspecialchars($dateParam) ?>" placeholder="Seleziona una data" readonly>
+          <input type="text" id="data" name="date" value="<?= htmlspecialchars($dateParam) ?>"
+            placeholder="Seleziona una data" readonly>
         </div>
 
         <h3>Orari disponibili:</h3>
         <div class="time-slots">
           <?php if (count($times)): ?>
             <?php foreach ($times as $t): ?>
-              <button type="button" class="time-slot<?= $t === $timeParam ? ' selected' : '' ?>" data-time="<?= htmlspecialchars($t) ?>">
+              <button type="button" class="time-slot<?= $t === $timeParam ? ' selected' : '' ?>"
+                data-time="<?= htmlspecialchars($t) ?>">
                 <?= substr($t, 0, 5) ?>
               </button>
             <?php endforeach; ?>
@@ -110,14 +111,21 @@ $conn = null;
         </div>
       </div>
 
-      <!-- Seat Selection & Cart Summary (restano invariati) -->
       <div class="main-content">
         <div class="screen">SCHERMO</div>
         <div class="seat-legend">
-          <div class="legend-item"><div class="seat-sample available"></div><span>Disponibile</span></div>
-          <div class="legend-item"><div class="seat-sample selected"></div><span>Selezionato</span></div>
-          <div class="legend-item"><div class="seat-sample occupied"></div><span>Occupato</span></div>
-          <div class="legend-item"><div class="seat-sample vip"></div><span>VIP</span></div>
+          <div class="legend-item">
+            <div class="seat-sample available"></div><span>Disponibile</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample selected"></div><span>Selezionato</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample occupied"></div><span>Occupato</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample vip"></div><span>VIP</span>
+          </div>
         </div>
         <div class="seats-grid"></div>
       </div>
@@ -134,20 +142,7 @@ $conn = null;
       </div>
     </div>
   </div>
-
   <?php include 'footer.html'; ?>
-
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="biglietti.js"></script>
-  <script>
-    flatpickr("#data", {
-      dateFormat: "d/m/Y",
-      defaultDate: "<?= htmlspecialchars($dateParam) ?>",
-      locale: "it",
-      clickOpens: false
-    });
-  </script>
 </body>
+
 </html>

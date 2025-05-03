@@ -302,3 +302,14 @@ nav ul li:hover .icon img {
   margin: 0;
   padding: 0;
 }
+
+#sidebar nav ul li.active {
+  background-color: var(--primary-color-lighter);
+  border-radius: 50px;
+}
+
+#sidebar nav ul li.active .text,
+#sidebar nav ul li.active .icon img {
+  color: white;
+  filter: brightness(0) invert(1);
+}

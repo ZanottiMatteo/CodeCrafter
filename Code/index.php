@@ -213,7 +213,6 @@
         <div class="modal-content">
             <button id="modalClose">&times;</button>
             <div id="modalBody">
-                <!-- Qui arriveranno i dettagli via AJAX -->
             </div>
         </div>
         <div id="salaTooltip" class="sala-tooltip" style="display:none;"></div>
