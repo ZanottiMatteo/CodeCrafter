@@ -1,64 +1,65 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.querySelector('.seats-grid');
-    const rows = parseInt(grid.dataset.rows, 10);
-    const cols = parseInt(grid.dataset.cols, 10);
-    const occupiedSeats = window.SALA_CONFIG.occupiedSeats;
-  
-    generateSeats(rows, cols, occupiedSeats);
-  });
-  
-  function generateSeats(rows, cols, occupiedSeats) {
-    const grid = document.querySelector('.seats-grid');
-    grid.innerHTML = '';
-  
-    for (let row = 0; row < rows; row++) {
-      const rowDiv = document.createElement('div');
-      rowDiv.className = 'seat-row';
-  
-      for (let col = 0; col < cols; col++) {
-        const seatNumber = `${String.fromCharCode(65 + row)}${col + 1}`;
-        const seat = createSeatElement(seatNumber, occupiedSeats);
-        rowDiv.appendChild(seat);
-      }
-  
-      grid.appendChild(rowDiv);
-    }
-  
-    // (se vuoi) animazione d’ingresso
-    animateElements('.seat', 'bounceIn');
-  }
-  
-  function createSeatElement(seatNumber, occupiedSeats) {
-    const seat = document.createElement('div');
-    seat.classList.add('seat');
-  
-    if (occupiedSeats.includes(seatNumber)) {
-      seat.classList.add('occupied');
-    } else {
-      seat.classList.add('available');
-      seat.addEventListener('click', () => {
-        seat.classList.toggle('selected');
-      });
-    }
-  
-    seat.textContent = seatNumber;
-    return seat;
-  }
-  
-  function getOccupiedSeats() {
-    // se vuoi ricaricare dal server via fetch:
-    // return fetch('/api/occupied.php?sala=1').then(r => r.json());
-    return window.SALA_CONFIG.occupiedSeats;
-  }
-  
-  function animateElements(selector, animationName) {
-    document.querySelectorAll(selector).forEach(el => {
-      el.style.opacity = '0';
-      el.classList.add('animated', animationName);
-      el.addEventListener('animationend', () => {
-        el.style.opacity = '';
-        el.classList.remove('animated', animationName);
-      }, { once: true });
+  const salaSelect = document.getElementById('sala');
+  const form       = document.querySelector('.search-form');
+  const grid       = document.querySelector('.seats-grid');
+  let rooms = [];
+
+  // 1) prendi via AJAX tutte le sale dal PHP
+  fetch('get_sala_data.php')
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      rooms = data;
+      populateDropdown();
+    })
+    .catch(err => {
+      console.error('Errore caricamento dati sale:', err);
+      alert('Impossibile caricare le sale. Riprova più tardi.');
+    });
+
+  // 2) ricostruisci le <option> in modo pulito
+  function populateDropdown() {
+    // resetta: mantieni solo la prima placeholder
+    salaSelect.innerHTML = '<option value="">Seleziona una sala</option>';
+    rooms.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;                                   // es. "1"
+      opt.textContent = `Sala ${r.id} – ${r.name}`;      // es. "Sala 1 – Tradizionale"
+      salaSelect.appendChild(opt);
     });
   }
-  
+
+  // 3) al submit, verifica e disegna
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const id = parseInt(salaSelect.value, 10);
+    if (!id) {
+      alert('Per favore seleziona una sala dal menu.');
+      return;
+    }
+    const room = rooms.find(r => r.id === id);
+    if (!room) {
+      alert('Sala selezionata non valida.');
+      return;
+    }
+    renderGrid(room);
+  });
+
+  // 4) disegna la griglia in base a numFile e numPostiPerFila
+  function renderGrid(room) {
+    grid.innerHTML = '';
+    for (let row = 0; row < room.numFile; row++) {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'seat-row';
+      for (let col = 0; col < room.numPostiPerFila; col++) {
+        const seatDiv = document.createElement('div');
+        seatDiv.className = 'seat available';
+        seatDiv.textContent = `${String.fromCharCode(65 + row)}${col + 1}`;
+        rowEl.appendChild(seatDiv);
+      }
+      grid.appendChild(rowEl);
+    }
+  }
+});

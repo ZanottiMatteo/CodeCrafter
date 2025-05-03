@@ -1,3 +1,7 @@
+<?php
+require_once 'connect.php'; 
+?>
+
 <!DOCTYPE html>
 <html lang="it">
 
@@ -10,15 +14,14 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="sale.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="js/nav.js"></script>
+  <script defer src="js/nav.js"></script>
   
 </head>
 
 <body>
-  <?php
-  include 'header.html';
-  include 'nav.html';
-  ?>
+  <?php include 'header.html'; ?>
+  <?php include 'nav.html'; ?>
+
   <div class="right-content">
     <div class="hero-banner">
       <div class="hero-content">
@@ -29,48 +32,64 @@
 
     <section id="filtro" class="search-section">
       <div class="container">
-        <form class="search-form">
+        <form class="search-form" method="GET" action="">
           <div class="form-group">
             <label for="sala"><i class="fas fa-theater-masks"></i> Sala:</label>
             <select id="sala" name="sala" class="sala">
               <option value="">Seleziona una sala</option>
-              <option value="3-D">3-D</option>
-              <option value="tradizionale">Tradizionale</option>
+              <?php
+              $stmt = $conn->query("SELECT numero, tipo FROM Sala");
+              while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                  echo '<option value="' . (int)$row['numero'] . '">' 
+                      . 'Sala ' . htmlspecialchars($row['numero']) . '</option>';
+              }
+              ?>
             </select>
           </div>
           <button type="submit" class="btn-search"><i class="fas fa-search"></i></button>
         </form>
       </div>
     </section>
-    <main class="container">
-      <section class="now-showing">
-        <div class="screen">SCHERMO</div>
-        <div class="seat-legend">
-          <div class="legend-item">
-            <div class="seat-sample available"></div><span>Disponibile</span>
-          </div>
-          <div class="legend-item">
-            <div class="seat-sample selected"></div><span>Selezionato</span>
-          </div>
-          <div class="legend-item">
-            <div class="seat-sample occupied"></div><span>Occupato</span>
-          </div>
-          <div class="legend-item">
-            <div class="seat-sample vip"></div><span>VIP</span>
-          </div>
-        </div>
-        <!-- qui metti i dati dinamici -->
-        <div
-          class="seats-grid"
-          data-rows="<%= sala.numFile %>"
-          data-seats-per-row="<%= sala.numPostiPerFila %>"></div>
 
-      </section>
+    <main class="container">
+      <div class="main-content">
+        <div class="screen">SCHERMO</div>
+
+        <div class="seat-legend">
+          <div class="legend-item"><div class="seat-sample available"></div><span>Disponibile</span></div>
+          <div class="legend-item"><div class="seat-sample selected"></div><span>Selezionato</span></div>
+          <div class="legend-item"><div class="seat-sample occupied"></div><span>Occupato</span></div>
+          <div class="legend-item"><div class="seat-sample vip"></div><span>VIP</span></div>
+        </div>
+
+        <?php
+        if (isset($_GET['sala']) && is_numeric($_GET['sala'])) {
+            $numeroSala = (int)$_GET['sala'];
+            $stmt = $conn->prepare("SELECT numFile, numPostiPerFila FROM Sala WHERE numero = ?");
+            $stmt->execute([$numeroSala]);
+            $sala = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($sala) {
+                $righe = (int)$sala['numPostiPerFila'];
+                $colonne = (int)$sala['numFile'];
+                echo '<div class="seats-grid">';
+                for ($i = 0; $i < $righe; $i++) {
+                    echo '<div class="row">';
+                    for ($j = 0; $j < $colonne; $j++) {
+                        echo '<div class="seat available" data-row="' . ($i + 1) . '" data-col="' . ($j + 1) . '"></div>';
+                    }
+                    echo '</div>';
+                }
+                echo '</div>';
+            } else {
+                echo "<p>Sala non trovata.</p>";
+            }
+        }
+        ?>
+      </div>
     </main>
   </div>
-  <?php
-  include 'footer.html';
-  ?>
-</body>
 
-<script src="sale.js"></script>
+  <?php include 'footer.html'; ?>
+</body>
+</html>
