@@ -54,14 +54,6 @@ require_once 'connect.php';
     <main class="container">
       <div class="main-content">
         <div class="screen">SCHERMO</div>
-
-        <div class="seat-legend">
-          <div class="legend-item"><div class="seat-sample available"></div><span>Disponibile</span></div>
-          <div class="legend-item"><div class="seat-sample selected"></div><span>Selezionato</span></div>
-          <div class="legend-item"><div class="seat-sample occupied"></div><span>Occupato</span></div>
-          <div class="legend-item"><div class="seat-sample vip"></div><span>VIP</span></div>
-        </div>
-
         <?php
         if (isset($_GET['sala']) && is_numeric($_GET['sala'])) {
             $numeroSala = (int)$_GET['sala'];
