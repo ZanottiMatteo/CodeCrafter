@@ -94,6 +94,7 @@
               $films[$codice] = [
                 'titolo' => $titolo,
                 'imgUrl' => $imgUrl,
+                'codice' => $codice
               ];
             }
           }
@@ -104,12 +105,21 @@
             echo '<button class="carousel-btn prev" aria-label="Precedente">‹</button>';
             echo '<div class="movie-carousel">';
             foreach ($films as $filmData) {
+              $titolo = htmlspecialchars($filmData['titolo']);
+              $filmCodice = urlencode($filmData['codice']);
+              $imgUrl = htmlspecialchars($filmData['imgUrl']);
+              $urlDate = urlencode($date);
+
               echo '
               <article class="movie-card">
-                  <div class="movie-poster" style="background-image: url(\'' . $filmData['imgUrl'] . '\')"></div>
-                  <div class="movie-info">
-                      <h3>' . htmlspecialchars($filmData['titolo']) . '</h3>
-                  </div>
+                <a href="biglietti.php?film=' . $filmCodice . '&date=' . $urlDate . '" class="ticket-btn" title="Acquista biglietto">
+                  <img src="https://cdn-icons-png.flaticon.com/128/3702/3702886.png" alt="Ticket" class="ticket-icon">
+                </a>
+
+                <div class="movie-poster" style="background-image: url(\'' . $imgUrl . '\')"></div>
+                <div class="movie-info">
+                    <h3>' . $titolo . '</h3>
+                </div>
               </article>';
             }
 
