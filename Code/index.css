@@ -347,6 +347,7 @@ body.no-scroll {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 .btn-details {
@@ -631,10 +632,10 @@ body.no-scroll {
 .movie-detail .showtimes-list li {
   flex: 0 0 calc(25% - 0.5rem);
   box-sizing: border-box;
-  white-space: nowrap;        
-  overflow: hidden;          
-  text-overflow: ellipsis;    
-  padding: 0.5rem 1rem;    
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.5rem 1rem;
   font-size: 0.95rem;
 
 }

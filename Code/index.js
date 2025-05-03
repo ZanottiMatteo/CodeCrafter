@@ -1,108 +1,104 @@
 document.addEventListener("DOMContentLoaded", function () {
     const filmInput = document.getElementById('film');
+    const filmIdInput = document.getElementById('film-id');
     const suggestionsContainer = document.getElementById('film-suggestions');
     const salaSelect = document.getElementById('sala');
     const dataSelect = document.getElementById('data');
     const orarioSelect = document.getElementById('orario');
+    const submitBtn = document.querySelector('.btn-search');
 
     salaSelect.disabled = true;
     dataSelect.disabled = true;
     orarioSelect.disabled = true;
+    submitBtn.disabled = true;
+
+    function updateSubmitState() {
+        submitBtn.disabled = !(
+            filmIdInput.value &&
+            dataSelect.value &&
+            orarioSelect.value
+        );
+    }
 
     function aggiornaOpzioni(filmId) {
-        if (filmId) {
-            fetch(`get_options_by_film.php?film_id=${filmId}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Risposta aggiornaOpzioni:', data);
+        if (!filmId) return;
 
-                    const formattedDates = data.date.map(d => {
-                        const [day, month, year] = d.data.split('/');
-                        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        fetch(`get_options_by_film.php?film_id=${filmId}`)
+            .then(res => res.json())
+            .then(data => {
+                const formattedDates = data.date.map(d => {
+                    const [day, month, year] = d.data.split('/');
+                    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                });
+
+                if (!dataSelect._flatpickr) {
+                    flatpickr("#data", {
+                        enable: formattedDates,
+                        dateFormat: "Y-m-d",
+                        locale: "it"
                     });
-
-                    if (!dataSelect._flatpickr) {
-                        flatpickr("#data", {
-                            enable: formattedDates,
-                            dateFormat: "Y-m-d",
-                            locale: "it"
-                        });
-                    } else {
-                        dataSelect._flatpickr.set("enable", formattedDates);
-                    }
-
-                    dataSelect.disabled = false;
-                })
-                .catch(error => console.error('Errore nella richiesta per le opzioni:', error));
-        }
+                } else {
+                    dataSelect._flatpickr.set("enable", formattedDates);
+                }
+                dataSelect.disabled = false;
+                updateSubmitState();
+            })
+            .catch(err => console.error('Errore aggiornaOpzioni:', err));
     }
 
     dataSelect.addEventListener('change', function () {
-        const selectedDate = this.value;
-        if (selectedDate) {
-            const [year, month, day] = selectedDate.split('-');
-            const formattedDate = `${day}/${month}/${year}`;
+        salaSelect.innerHTML = '';
+        salaSelect.disabled = true;
+        document.getElementById('salaTooltip').style.display = 'none';
 
-            fetch(`get_options_by_film_and_date.php?film_id=${filmInput.dataset.id}&data=${formattedDate}`)
-                .then(response => response.json())
-                .then(data => {
-                    orarioSelect.disabled = false;
-
-                    orarioSelect.innerHTML = '<option value="">Seleziona un orario</option>';
-                    data.orari.forEach(orario => {
-                        const option = document.createElement('option');
-                        option.value = orario.ora;
-                        option.textContent = orario.ora.substring(0, 5);
-                        orarioSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Errore nella richiesta per le opzioni della data:', error));
+        const sel = this.value;
+        if (!sel) {
+            updateSubmitState();
+            return;
         }
+        const [y, m, d] = sel.split('-');
+        const formattedDate = `${d}/${m}/${y}`;
+
+        fetch(`get_options_by_film_and_date.php?film_id=${filmInput.dataset.id}&data=${formattedDate}`)
+            .then(res => res.json())
+            .then(data => {
+                orarioSelect.disabled = false;
+                orarioSelect.innerHTML = '<option value="">Seleziona un orario</option>';
+                data.orari.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o.ora;
+                    opt.textContent = o.ora.substring(0, 5);
+                    orarioSelect.appendChild(opt);
+                });
+                updateSubmitState();
+            })
+            .catch(err => console.error('Errore orari:', err));
     });
 
     orarioSelect.addEventListener('change', function () {
-        const selectedDate = dataSelect.value;
-        const selectedTime = this.value;
-
-        if (selectedDate && selectedTime) {
-            const [year, month, day] = selectedDate.split('-');
-            const formattedDate = `${day}/${month}/${year}`;
-
-            fetch(`get_options_by_film_and_date_and_time.php?film_id=${filmInput.dataset.id}&data=${formattedDate}&ora=${selectedTime}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Risposta sale:', data);
-                    if (data.sale.length > 0) {
-                        const salaInfo = data.sale[0];
-
-                        const salaInput = document.getElementById('sala');
-                        let iconHtml = '';
-                        if (salaInfo.tipo === '3-D') {
-                            iconHtml = `<img src="https://cdn-icons-png.flaticon.com/128/83/83596.png" alt="3D Icon" class="sala-icon">`;
-                            salaInput.innerHTML = `Sala ${salaInfo.numero} ${iconHtml}`;
-                        } else if (salaInfo.tipo === 'tradizionale') {
-                            iconHtml = `<img src="https://cdn-icons-png.flaticon.com/128/83/83467.png" alt="Traditional Icon" class="sala-icon">`;
-                            salaInput.innerHTML = `Sala ${salaInfo.numero} ${iconHtml}`;
-                        }
-                    } else {
-                        console.log('Nessuna sala disponibile per questa combinazione');
-                        const salaInput = document.getElementById('sala');
-                        salaInput.value = '';
-                    }
-                })
-                .catch(error => console.error('Errore nella richiesta per la sala:', error));
+        const selDate = dataSelect.value;
+        const selTime = this.value;
+        if (!selDate || !selTime) {
+            updateSubmitState();
+            return;
         }
-    });
+        const [y, m, d] = selDate.split('-');
+        const formattedDate = `${d}/${m}/${y}`;
 
-    function mostraTuttiIFilm() {
-        fetch('search_film.php?term=')
-            .then(response => response.json())
-            .then(renderSuggestions)
-            .catch(error => {
-                suggestionsContainer.style.display = 'none';
-                document.body.classList.remove('no-scroll');
-            });
-    }
+        fetch(`get_options_by_film_and_date_and_time.php?film_id=${filmInput.dataset.id}&data=${formattedDate}&ora=${selTime}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.sale.length) {
+                    const info = data.sale[0];
+                    let icon = info.tipo === '3-D'
+                        ? `<img src="https://cdn-icons-png.flaticon.com/128/83/83596.png" class="sala-icon">`
+                        : `<img src="https://cdn-icons-png.flaticon.com/128/83/83467.png" class="sala-icon">`;
+                    salaSelect.innerHTML = `Sala ${info.numero} ${icon}`;
+                }
+                updateSubmitState();
+            })
+            .catch(err => console.error('Errore sala:', err));
+    });
 
     function renderSuggestions(data) {
         suggestionsContainer.innerHTML = '';
@@ -110,19 +106,19 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.classList.add('no-scroll');
 
         data.forEach(film => {
-            const suggestionItem = document.createElement('div');
-            suggestionItem.classList.add('film-suggestion');
-            suggestionItem.innerHTML = `
-                <img src="${film.immagine}" alt="${film.titolo}" class="film-thumbnail" />
+            const item = document.createElement('div');
+            item.className = 'film-suggestion';
+            item.innerHTML = `
+                <img src="${film.immagine}" class="film-thumbnail" alt="${film.titolo}">
                 <span>${film.titolo}</span>
             `;
+            item.dataset.id = film.id;
+            suggestionsContainer.appendChild(item);
 
-            suggestionItem.dataset.id = film.id;
-            suggestionsContainer.appendChild(suggestionItem);
-
-            suggestionItem.addEventListener('click', function () {
+            item.addEventListener('click', () => {
                 filmInput.value = film.titolo;
                 filmInput.dataset.id = film.id;
+                filmIdInput.value = film.id;
 
                 dataSelect.value = '';
                 dataSelect.disabled = true;
@@ -130,10 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     dataSelect._flatpickr.clear();
                     dataSelect._flatpickr.set("enable", []);
                 }
-
                 orarioSelect.innerHTML = '<option value="">Seleziona un orario</option>';
                 orarioSelect.disabled = true;
-
                 salaSelect.innerHTML = '';
                 salaSelect.disabled = true;
 
@@ -141,23 +135,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.classList.remove('no-scroll');
 
                 aggiornaOpzioni(film.id);
+                updateSubmitState();
             });
         });
     }
 
-    filmInput.addEventListener('input', function () {
-        const query = this.value;
+    function mostraTuttiIFilm() {
+        fetch('search_film.php?term=')
+            .then(res => res.json())
+            .then(renderSuggestions)
+            .catch(() => {
+                suggestionsContainer.style.display = 'none';
+                document.body.classList.remove('no-scroll');
+            });
+    }
 
-        if (query.length === 0) {
+    filmInput.addEventListener('input', function () {
+        filmIdInput.value = '';
+        updateSubmitState();
+
+        const q = this.value;
+        if (!q) {
             mostraTuttiIFilm();
         } else {
-            fetch('search_film.php?term=' + encodeURIComponent(query))
-                .then(response => response.json())
-                .then(data => {
-                    renderSuggestions(data);
-                })
-                .catch(error => {
-                    console.error('Errore nella richiesta AJAX:', error);
+            fetch('search_film.php?term=' + encodeURIComponent(q))
+                .then(res => res.json())
+                .then(renderSuggestions)
+                .catch(() => {
                     suggestionsContainer.style.display = 'none';
                     document.body.classList.remove('no-scroll');
                 });
@@ -165,17 +169,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     filmInput.addEventListener('focus', function () {
-        const query = filmInput.value;
+        if (!this.value) mostraTuttiIFilm();
+    });
 
-        if (query === "") {
-            mostraTuttiIFilm();
+    document.addEventListener('click', function (e) {
+        if (!filmInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.style.display = 'none';
+            document.body.classList.remove('no-scroll');
         }
     });
 
-    document.addEventListener('click', function (event) {
-        if (!filmInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
-            suggestionsContainer.style.display = 'none';
-            document.body.classList.remove('no-scroll');
+    const form = document.querySelector('.search-form');
+    form.addEventListener('submit', function (e) {
+        const raw = dataSelect.value;
+        if (raw) {
+            const [year, month, day] = raw.split('-');
+            dataSelect.value = `${day}/${month}/${year}`;
         }
     });
 });

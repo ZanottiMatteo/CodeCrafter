@@ -34,17 +34,18 @@
 
         <section id="filtro" class="search-section">
             <div class="container">
-                <form class="search-form">
+                <form class="search-form" action="biglietti.php" method="get">
                     <div class="form-group">
                         <label for="film"><i class="fas fa-film"></i> Film:</label>
                         <input type="text" id="film" name="film" placeholder="Cerca un film..." list="film-list"
                             autocomplete="off">
+                        <input type="hidden" id="film-id" name="film">
                         <div id="film-suggestions" class="film-suggestions"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="data"><i class="far fa-calendar-alt"></i> Data:</label>
-                        <input type="text" id="data" name="data" placeholder="Seleziona una data" readonly>
+                        <input type="text" id="data" name="date" placeholder="Seleziona una data" readonly>
                     </div>
 
                     <div class="form-group">
@@ -159,7 +160,11 @@
                                                         data-film-date="' . htmlspecialchars($date, ENT_QUOTES) . '">
                                                         <i class="fas fa-info-circle"></i> Dettagli
                                                     </button>
-                                                    <button class="btn-book"><i class="fas fa-ticket-alt"></i> Prenota</button>
+                                                    <a 
+                                                        href="biglietti.php?film=' . urlencode($codice) . '&date=' . urlencode($date) . '" 
+                                                        class="btn-book">
+                                                        <i class="fas fa-ticket-alt"></i> Prenota
+                                                    </a>
                                                 </div>
                                             </div>
                                         </article>';
