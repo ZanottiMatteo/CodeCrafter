@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="sale.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="js/nav.js"></script>
+  
 </head>
 
 <body>
@@ -43,6 +44,26 @@
     </section>
     <main class="container">
       <section class="now-showing">
+        <div class="screen">SCHERMO</div>
+        <div class="seat-legend">
+          <div class="legend-item">
+            <div class="seat-sample available"></div><span>Disponibile</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample selected"></div><span>Selezionato</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample occupied"></div><span>Occupato</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample vip"></div><span>VIP</span>
+          </div>
+        </div>
+        <!-- qui metti i dati dinamici -->
+        <div
+          class="seats-grid"
+          data-rows="<%= sala.numFile %>"
+          data-seats-per-row="<%= sala.numPostiPerFila %>"></div>
 
       </section>
     </main>
@@ -51,3 +72,5 @@
   include 'footer.html';
   ?>
 </body>
+
+<script src="sale.js"></script>
