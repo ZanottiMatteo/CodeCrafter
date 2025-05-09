@@ -24,8 +24,10 @@
 .search-section {
   background-color: white;
   border: 5px solid var(--primary-color);
-  padding: 0.7rem 0;
-  margin: 2rem 22rem;
+  padding: 1rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  width: 90%;
   box-shadow: 0 2px 15px rgba(66, 0, 0, 0.267);
   position: sticky;
   top: 6rem;
@@ -34,16 +36,22 @@
 }
 
 .search-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 3.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: center;
 }
+
 
 .form-group {
   display: flex;
   flex-direction: column;
   color: var(--primary-color);
+  flex: 1 1 180px;
+  min-width: 150px;
 }
+
 
 .form-group label {
   margin-bottom: 0.5rem;
@@ -63,12 +71,10 @@
 }
 
 .btn-search {
-  grid-column: 5;
-  grid-row: 1;
   background-color: var(--primary-color-lighter);
   color: white;
   border: none;
-  padding: 2rem;
+  padding: 1rem 2rem;
   border-radius: 30px;
   font-size: 1rem;
   font-weight: 600;
@@ -78,6 +84,10 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 60px;
+  height: 44px;
 }
 
 .btn-search:hover {
@@ -215,6 +225,7 @@ body.no-scroll {
 
 .movie-carousel {
   display: flex;
+  flex-wrap: nowrap;
   gap: 1.5rem;
   padding: 1rem 0;
   transition: transform 0.5s ease;
@@ -508,16 +519,6 @@ body.no-scroll {
   }
 
   .movie-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-form {
-    grid-template-columns: 1fr;
-  }
-
-  .promo-cards {
     grid-template-columns: 1fr;
   }
 }
