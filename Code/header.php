@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 $isLoggedIn = isset($_SESSION['user_id']);
 $nomeUtente = $_SESSION['nome'] ?? '';
@@ -12,10 +12,10 @@ $nomeUtente = $_SESSION['nome'] ?? '';
     <div class="user-actions">
       <?php if ($isLoggedIn): ?>
         <div class="user-area">
-          <i class="fas fa-user-circle fa-2x"></i>
+          <img src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png" alt="User" class="user-icon">
           <span class="user-name"><?= htmlspecialchars($nomeUtente) ?></span>
-          <form method="post" action="logout.php" style="display:inline;">
-            <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          <form method="post" action="logout.php">
+            <button type="submit" class="logout-btn"><img src="https://cdn-icons-png.flaticon.com/128/1828/1828427.png" alt="Logout" class="logout-icon"> Logout</button>
           </form>
         </div>
       <?php else: ?>

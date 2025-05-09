@@ -13,7 +13,7 @@
 
 <body>
   <?php
-  include 'header.html';
+  include 'header.php';
   ?>
   <?php
   include 'filter.html';

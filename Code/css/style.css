@@ -474,3 +474,68 @@ nav ul li.active {
     transform: none !important;
   }
 }
+
+.logout-btn {
+  position: relative;
+  overflow: hidden;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 42px;
+}
+
+.logout-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.logout-btn:hover::after {
+  left: 100%;
+}
+
+.logout-btn:hover {
+  background-color: rgba(253, 253, 253, 0.322);
+}
+
+.user-name {
+  color: white;
+  font-weight: 600;
+}
+
+.user-area i.fa-user-circle {
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 5px 10px;
+  background-color: var(--primary-color);
+}
+
+.user-icon {
+  width: 32px;
+  height: 32px;
+  filter: brightness(0) invert(1);
+}
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+  margin-right: 6px;
+  vertical-align: middle;
+}

@@ -23,4 +23,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 a.parentElement.classList.add('active');
             }
         });
+        
 });

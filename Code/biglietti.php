@@ -57,7 +57,7 @@ $conn = null;
 
 <body>
   <?php
-  include 'header.html';
+  include 'header.php';
   include 'nav.html';
   ?>
   <div class="right-content">
