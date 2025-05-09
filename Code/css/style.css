@@ -539,3 +539,9 @@ nav ul li.active {
   margin-right: 6px;
   vertical-align: middle;
 }
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: default;
+}

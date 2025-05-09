@@ -23,5 +23,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 a.parentElement.classList.add('active');
             }
         });
-        
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const bigliettiLink = document.getElementById('biglietti-link');
+    const searchBtn = document.querySelector('.btn-search');
+    const bookBtns = document.querySelectorAll('.btn-book');
+    const ticketBtns = document.querySelectorAll('.ticket-btn');
+
+    if (localStorage.getItem('bigliettiAttivo') === 'true' && bigliettiLink) {
+        bigliettiLink.classList.remove('disabled-link');
+    }
+
+    function attivaLinkBiglietti() {
+        if (bigliettiLink) {
+            bigliettiLink.classList.remove('disabled-link');
+            localStorage.setItem('bigliettiAttivo', 'true');
+        }
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', attivaLinkBiglietti);
+    }
+
+    bookBtns.forEach(btn => {
+        btn.addEventListener('click', attivaLinkBiglietti);
+    });
+
+    ticketBtns.forEach(btn => {
+        btn.addEventListener('click', attivaLinkBiglietti);
+    });
+});
+
+
+
+

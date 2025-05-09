@@ -1,23 +1,3 @@
-/* Hero Banner */
-.hero-banner {
-    margin-top: 5rem;
-    background: linear-gradient(#750000, #ff0000), url('https://via.placeholder.com/1920x600') center/cover no-repeat;
-    color: white;
-    padding: 5rem 0;
-    text-align: center;
-}
-
-.hero-content {
-    display: flex;
-    flex-direction: column;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.hero-content p {
-    font-size: 1.2rem;
-}
-
 /* Movies Grid */
 .movies-grid {
     display: flex;
@@ -242,6 +222,7 @@
     top: 6rem;
     border-radius: 20px;
     z-index: 1000;
+    margin-bottom: 6rem;
 }
 
 .search-form {
@@ -293,23 +274,6 @@
 
 .btn-search:hover {
     background-color: #450000;
-}
-
-.hero-banner {
-    animation: fadeInDown 0.8s ease-out;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-banner::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(117, 0, 0, 0.3) 0%, rgba(255, 0, 0, 0.1) 100%);
-    animation: gradientPulse 15s infinite alternate;
 }
 
 @keyframes fadeInDown {
@@ -495,36 +459,35 @@
     text-decoration: none;
     z-index: 2;
     transition: transform 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .ticket-btn:hover {
+}
+
+.ticket-btn:hover {
     background-color: #ff0000;
     transform: scale(1.1);
-  }
-  
-  .movie-card {
-    position: relative;
-  }
+}
 
-  .ticket-btn {
+.movie-card {
+    position: relative;
+}
+
+.ticket-btn {
     position: absolute;
     top: 10px;
     right: 10px;
     background-color: white;
     border-radius: 50%;
     padding: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 2;
     transition: transform 0.3s ease;
-  }
-  
-  .ticket-btn:hover {
+}
+
+.ticket-btn:hover {
     transform: scale(1.1);
-  }
-  
-  .ticket-icon {
+}
+
+.ticket-icon {
     width: 32px;
     height: 32px;
     display: block;
-  }
-  
+}

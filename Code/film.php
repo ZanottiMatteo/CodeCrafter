@@ -20,13 +20,6 @@
   include 'nav.html';
   ?>
   <div class="right-content">
-    <div class="hero-banner">
-      <div class="hero-content">
-        <h2>Consulta e scegli i film che vuoi vedere</h2>
-        <p>Seleziona la data e scegli il film</p>
-      </div>
-    </div>
-
     <section id="filtro" class="search-section">
       <div class="container">
         <form class="search-form" method="get" action="">
