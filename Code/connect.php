@@ -10,7 +10,6 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 } catch (PDOException $e) {
-    echo "DB ERROR:" . $e->getMessage();
     $error = true;
 }
 ?>

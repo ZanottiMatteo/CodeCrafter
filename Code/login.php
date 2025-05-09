@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="it">
 
+<?php
+session_start();
+if (isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit;
+}
+?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +21,6 @@
     <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="login.js"></script>
-    <script src="js/nav.js"></script>
 </head>
 
 <body>
@@ -62,7 +69,7 @@
         <form id="signupForm">
             <div class="form-group">
                 <span><i class="fas fa-user"></i></span>
-                <input type="text" placeholder="Full Name" required>
+                <input type="text" placeholder="Name" required>
             </div>
             <div class="form-group">
                 <span><i class="fas fa-envelope"></i></span>

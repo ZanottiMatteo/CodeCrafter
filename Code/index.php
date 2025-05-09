@@ -21,17 +21,10 @@
 
 <body>
     <?php
-    include 'header.html';
+    include 'header.php';
     include 'nav.html';
     ?>
     <div class="right-content">
-        <div class="hero-banner">
-            <div class="hero-content">
-                <h2>Prenota la tua esperienza cinematografica</h2>
-                <p>Scopri i migliori film in programmazione e riserva il tuo posto</p>
-            </div>
-        </div>
-
         <section id="filtro" class="search-section">
             <div class="container">
                 <form class="search-form" action="biglietti.php" method="get">
