@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
   <link rel="stylesheet" href="sale.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script defer src="js/nav.js"></script>
-  <script defer src="sale.js"></script> <!-- ✅ collegamento giusto -->
+  <script defer src="sale.js"></script>
 </head>
 
 <body>
@@ -20,13 +21,6 @@
   <?php include 'nav.html'; ?>
 
   <div class="right-content">
-    <div class="hero-banner">
-      <div class="hero-content">
-        <h2>Scopri le sale e scegli la Tua</h2>
-        <p>Tradizionali e 3-D</p>
-      </div>
-    </div>
-
     <section id="filtro" class="search-section">
       <div class="container">
         <form class="search-form" method="GET" action="">
@@ -37,9 +31,9 @@
               <?php
               $stmt = $conn->query("SELECT numero, tipo FROM Sala");
               while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                  echo '<option value="' . (int)$row['numero'] . '">' 
-                      . 'Sala ' . htmlspecialchars($row['numero']) . ' – ' 
-                      . htmlspecialchars($row['tipo']) . '</option>';
+                echo '<option value="' . (int)$row['numero'] . '">'
+                  . 'Sala ' . htmlspecialchars($row['numero']) . ' – '
+                  . htmlspecialchars($row['tipo']) . '</option>';
               }
               ?>
             </select>
@@ -59,4 +53,5 @@
 
   <?php include 'footer.html'; ?>
 </body>
+
 </html>

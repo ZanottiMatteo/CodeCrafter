@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     grid.innerHTML = '';
     grid.style.display = 'grid';
     grid.style.gridTemplateColumns = `repeat(${room.numPostiPerFila}, 1fr)`;
-    grid.style.gap = '5px';
+    grid.style.gap = '3px';
 
     for (let row = 0; row < room.numFile; row++) {
       for (let col = 0; col < room.numPostiPerFila; col++) {
