@@ -3,14 +3,21 @@ session_start();
 
 $filmId = isset($_GET['film']) ? intval($_GET['film']) : ($_SESSION['film'] ?? 0);
 $dateParam = isset($_GET['date']) ? $_GET['date'] : ($_SESSION['date'] ?? '');
-$timeParam = isset($_GET['orario']) ? $_GET['orario'] : ($_SESSION['orario'] ?? '');
+$timeParam = isset($_GET['orario']) ? substr($_GET['orario'], 0, 5) : ($_SESSION['orario'] ?? '');
 
-if (isset($_GET['film']))
+if (isset($_GET['film'])) {
   $_SESSION['film'] = $filmId;
-if (isset($_GET['date']))
+  unset($_SESSION['orario']);
+}
+if (isset($_GET['date'])) {
   $_SESSION['date'] = $dateParam;
-if (isset($_GET['orario']))
-  $_SESSION['orario'] = $timeParam;
+  unset($_SESSION['orario']);
+}
+if (isset($_GET['orario'])) {
+  $_SESSION['orario'] = substr($_GET['orario'], 0, 5);
+  unset($_SESSION['orario']);
+}
+
 
 require 'connect.php';
 $stmt = $conn->prepare(
@@ -57,6 +64,9 @@ $conn = null;
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
+  <script>
+    const userMail = <?= isset($_SESSION['mail']) ? json_encode($_SESSION['mail']) : 'null' ?>;
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -70,86 +80,95 @@ $conn = null;
   include 'nav.html';
   ?>
   <div class="right-content">
-    <div class="hero-banner">
-      <div class="hero-content">
-        <h2>Acquista i biglietti per i migliori film</h2>
-        <p>Seleziona il film, scegli l’orario e prenota il tuo posto in sala</p>
-      </div>
-    </div>
-
     <div class="container">
-      <div class="centralbar">
-        <div class="booking-steps">
-          <div class="step completed">1. Scegli il film</div>
-          <div class="step<?= $timeParam ? ' completed' : '' ?>">2. Seleziona orario</div>
-          <div class="step">3. Scegli i posti</div>
-          <div class="step">4. Pagamento</div>
-        </div>
-      </div>
 
-      <div class="movie-selection">
-        <div class="movie-card selected-movie">
-          <img src="<?= htmlspecialchars($posterUrl) ?>" alt="Locandina <?= htmlspecialchars($filmData['titolo']) ?>">
-          <h3><?= htmlspecialchars($filmData['titolo']) ?></h3>
-          <div class="movie-info">
+      <section id="filtro" class="search-section">
+        <div class="centralbar">
+          <div class="booking-steps">
+            <div class="step<?= ($filmId > 0) ? ' completed' : '' ?>">1. Scegli il film</div>
+            <div class="step<?= ($filmId > 0 && !empty($dateParam)) ? ' completed' : '' ?>">2. Seleziona orario</div>
+            <div class="step<?= ($filmId > 0 && !empty($dateParam)) ? ' completed' : '' ?>">3. Scegli i posti</div>
+            <div class="step<?= ($filmId > 0 && !empty($dateParam)) ? ' completed' : '' ?>">4. Pagamento</div>
+          </div>
+      </section>
+
+      <div class="row row-top">
+        <div class="movie-selection">
+          <div class="movie-card selected-movie">
+            <img src="<?= htmlspecialchars($posterUrl) ?>" alt="Locandina <?= htmlspecialchars($filmData['titolo']) ?>">
+          </div>
+        </div>
+
+        <div class="datetime-picker">
+          <div class="movie-title">
+            <h3>Titolo:</h3>
+            <span><?= htmlspecialchars($filmData['titolo']) ?></span>
+          </div>
+          <div class="movie-language">
+            <h3>Lingua:</h3>
             <span class="rating"><?= htmlspecialchars($filmData['lingua']) ?></span>
+          </div>
+          <div class="movie-duration">
+            <h3>Durata:</h3>
             <span class="duration"><?= htmlspecialchars($filmData['durata']) ?> min</span>
           </div>
+          <div class="data-picker">
+            <h3>Giorno:</h3>
+            <span id="data" class="selected-date"><?= htmlspecialchars($dateParam) ?></span>
+          </div>
+          <h3>Orari disponibili:</h3>
+          <div class="time-slots">
+            <?php if (count($times)): ?>
+              <?php foreach ($times as $t):
+                $tShort = substr($t, 0, 5); ?>
+                <button class="time-slot<?= $tShort === substr($timeParam, 0, 5) ? ' selected' : '' ?>"
+                  data-time="<?= htmlspecialchars($tShort) ?>">
+                  <?= $tShort ?>
+                </button>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p>Nessun orario disponibile per questa data.</p>
+            <?php endif; ?>
+          </div>
         </div>
       </div>
 
-      <div class="datetime-picker">
-        <div class="data-picker">
-          <h3>Giorno:</h3>
-          <input type="text" id="data" name="date" value="<?= htmlspecialchars($dateParam) ?>"
-            placeholder="Seleziona una data" readonly>
-        </div>
-
-        <h3>Orari disponibili:</h3>
-        <div class="time-slots">
-          <?php if (count($times)): ?>
-            <?php foreach ($times as $t): ?>
-              <button type="button" class="time-slot<?= $t === $timeParam ? ' selected' : '' ?>"
-                data-time="<?= htmlspecialchars($t) ?>">
-                <?= substr($t, 0, 5) ?>
-              </button>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <p>Nessun orario disponibile per questa data.</p>
-          <?php endif; ?>
+      <div class="row row-middle">
+        <div class="main-content">
+          <div class="screen">SCHERMO</div>
+          <div class="seat-legend">
+            <div class="legend-item">
+              <div class="seat-sample available"></div><span>Disponibile</span>
+            </div>
+            <div class="legend-item">
+              <div class="seat-sample selected"></div><span>Selezionato</span>
+            </div>
+            <div class="legend-item">
+              <div class="seat-sample occupied"></div><span>Occupato</span>
+            </div>
+            <div class="legend-item">
+              <div class="seat-sample vip"></div><span>VIP</span>
+            </div>
+          </div>
+          <div class="seats-grid"></div>
         </div>
       </div>
 
-      <div class="main-content">
-        <div class="screen">SCHERMO</div>
-        <div class="seat-legend">
-          <div class="legend-item">
-            <div class="seat-sample available"></div><span>Disponibile</span>
+      <div class="row row-bottom">
+        <div class="cart-summary">
+          <h3>Il tuo ordine:</h3>
+          <ul class="selected-seats"></ul>
+          <div class="total-price"><span>Totale (€):</span><span id="total">0.00</span></div>
+          <div class="promo-section">
+            <input type="text" placeholder="Inserisci codice promozionale">
+            <button class="apply-promo">Applica</button>
           </div>
-          <div class="legend-item">
-            <div class="seat-sample selected"></div><span>Selezionato</span>
-          </div>
-          <div class="legend-item">
-            <div class="seat-sample occupied"></div><span>Occupato</span>
-          </div>
-          <div class="legend-item">
-            <div class="seat-sample vip"></div><span>VIP</span>
-          </div>
+          <button class="checkout-button">Procedi al pagamento</button>
         </div>
-        <div class="seats-grid"></div>
       </div>
 
-      <div class="cart-summary">
-        <h3>Il tuo ordine:</h3>
-        <ul class="selected-seats"></ul>
-        <div class="total-price"><span>Totale (€):</span><span id="total">0.00</span></div>
-        <div class="promo-section">
-          <input type="text" placeholder="Inserisci codice promozionale">
-          <button class="apply-promo">Applica</button>
-        </div>
-        <button class="checkout-button">Procedi al pagamento</button>
-      </div>
     </div>
+
   </div>
   <?php include 'footer.html'; ?>
 </body>

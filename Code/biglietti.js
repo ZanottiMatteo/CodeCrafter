@@ -11,8 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'FESTA10': 10
   };
 
-  let bookingState = {
-    selectedMovie: document.querySelector('.selected-movie h3').textContent,
+  const bookingState = {
     selectedTime: null,
     selectedSeats: [],
     totalPrice: 0,
@@ -30,11 +29,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   animateElements('.time-slot', 'fadeIn');
 
+  const preselectedTime = new URLSearchParams(window.location.search).get('orario');
+  if (preselectedTime) {
+    uiElements.timeSlots.forEach(slot => {
+      const shortTime = slot.getAttribute('data-time')?.slice(0, 5);
+      if (shortTime === preselectedTime.slice(0, 5)) {
+        slot.classList.add('selected');
+        bookingState.selectedTime = shortTime;
+        generateSeats();
+        updateSteps(2);
+      }
+    });
+  }
+
   uiElements.timeSlots.forEach(slot => {
     slot.addEventListener('click', () => {
       uiElements.timeSlots.forEach(t => t.classList.remove('selected'));
       slot.classList.add('selected', 'rubberBand');
-      bookingState.selectedTime = slot.getAttribute('data-time');
+      const fullTime = slot.getAttribute('data-time');
+      bookingState.selectedTime = fullTime.slice(0, 5);
       generateSeats();
       updateSteps(2);
     });
@@ -54,15 +67,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const seat = createSeatElement(seatNumber, occupiedSeats);
         rowDiv.appendChild(seat);
       }
+
       uiElements.seatsGrid.appendChild(rowDiv);
     }
+
     animateElements('.seat', 'bounceIn');
   }
 
   function createSeatElement(seatNumber, occupiedSeats) {
-    const seat = document.createElement('div');
     const isVIP = SEAT_TYPES.VIP.seats.includes(seatNumber);
     const seatType = isVIP ? SEAT_TYPES.VIP : SEAT_TYPES.STANDARD;
+    const seat = document.createElement('div');
 
     seat.className = `seat ${seatType.class} ${occupiedSeats.includes(seatNumber) ? 'occupied' : 'available'}`;
     seat.textContent = seatNumber;
@@ -80,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     seat.classList.add('wobble');
 
     if (seat.classList.contains('selected')) {
-      bookingState.selectedSeats.push({ number: seatNumber, price: price });
+      bookingState.selectedSeats.push({ number: seatNumber, price });
       bookingState.totalPrice += price;
       updateSteps(3);
     } else {
@@ -97,7 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
       .map(seat => `<li>Posto ${seat.number} (€${seat.price})</li>`)
       .join('');
 
-    uiElements.totalElement.textContent = (bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2);
+    const discountedTotal = bookingState.totalPrice * (1 - bookingState.discountApplied / 100);
+    uiElements.totalElement.textContent = discountedTotal.toFixed(2);
   }
 
   function getOccupiedSeats() {
@@ -119,15 +135,13 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.querySelector('.checkout-button').addEventListener('click', () => {
-    if (!bookingState.selectedTime || !bookingState.selectedSeats.length) {
+    if (!bookingState.selectedTime || bookingState.selectedSeats.length === 0) {
       showCustomAlert('warning', 'Completa tutti i passaggi!', 'Seleziona orario e posti');
       return;
     }
 
-    const confirmMessage = `📽️ Film: ${bookingState.selectedMovie}<br>
-                            ⏰ Orario: ${bookingState.selectedTime}<br>
-                            💺 Posti: ${bookingState.selectedSeats.map(s => s.number).join(', ')}<br>
-                            💰 Totale: €${(bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)}`;
+    const filmTitle = document.querySelector('.movie-title span')?.textContent.trim() || '';
+    const confirmMessage = `📽️ Film: ${filmTitle}<br>⏰ Orario: ${bookingState.selectedTime}<br>💺 Posti: ${bookingState.selectedSeats.map(s => s.number).join(', ')}<br>💰 Totale: €${(bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)}`;
 
     Swal.fire({
       title: 'Confermare la prenotazione?',
@@ -137,12 +151,60 @@ document.addEventListener('DOMContentLoaded', function () {
       confirmButtonText: 'Conferma',
       cancelButtonText: 'Annulla'
     }).then(result => {
-      if (result.isConfirmed) {
-        Swal.fire('Prenotazione Confermata! 🎉', 'Riceverai una mail di conferma<br>Buona visione!', 'success');
-        resetBooking();
+      if (!result.isConfirmed) return;
+
+      if (typeof userMail !== 'undefined' && userMail) {
+        inviaMail(userMail, filmTitle);
+      } else {
+        Swal.fire({
+          title: 'Inserisci la tua email',
+          input: 'email',
+          inputLabel: 'Riceverai il riepilogo della prenotazione',
+          inputPlaceholder: 'email@example.com',
+          showCancelButton: true,
+          confirmButtonText: 'Invia'
+        }).then(input => {
+          if (input.isConfirmed && input.value) {
+            inviaMail(input.value, filmTitle);
+          }
+        });
       }
     });
   });
+
+  function inviaMail(email, film) {
+    const payload = {
+      email,
+      film,
+      orario: bookingState.selectedTime,
+      posti: bookingState.selectedSeats.map(s => s.number).join(', '),
+      totale: (bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)
+    };
+
+    fetch('send_ticket_email.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          Swal.fire({
+            title: 'Prenotazione Confermata! 🎉',
+            html: 'Riceverai una mail di conferma<br>Buona visione!',
+            icon: 'success',
+            timer: 3000,
+            showConfirmButton: false,
+            willClose: () => {
+              localStorage.removeItem('bigliettiAttivo');
+              navigator.sendBeacon('clear_session.php');
+              window.location.href = 'index.php';
+            }
+          });
+        } else {
+          showCustomAlert('error', 'Errore nell’invio della mail');
+        }
+      });
+  }
 
   function animateElements(selector, animation) {
     document.querySelectorAll(selector).forEach(el => {
@@ -155,20 +217,11 @@ document.addEventListener('DOMContentLoaded', function () {
     Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
   }
 
-  function resetBooking() {
-    bookingState.selectedTime = null;
-    bookingState.selectedSeats = [];
-    bookingState.totalPrice = 0;
-    bookingState.discountApplied = 0;
-    uiElements.totalElement.textContent = '0.00';
-    uiElements.seatsList.innerHTML = '';
-    generateSeats();
-    updateSteps(1);
-  }
-
   function updateSteps(step) {
-    uiElements.steps.forEach((el, idx) => el.classList.toggle('active', idx <= step));
+    uiElements.steps.forEach((el, idx) => {
+      el.classList.toggle('active', idx <= step);
+      el.classList.toggle('completed', idx < step);
+    });
   }
-
   generateSeats();
 });
