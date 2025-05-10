@@ -40,7 +40,7 @@
 
 }
 
-.btn-search {
+.btn-search2 {
     grid-column: 5;
     grid-row: 1;
     background-color: var(--primary-color-lighter);
@@ -58,7 +58,7 @@
     gap: 8px;
 }
 
-.btn-search:hover {
+.btn-search2:hover {
     background-color: #450000;
 }
 

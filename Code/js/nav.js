@@ -55,6 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+let leavingViaLink = false;
+
+document.addEventListener('click', e => {
+    const target = e.target.closest('a, button');
+    if (target && target.href && target.href.startsWith(window.location.origin)) {
+        leavingViaLink = true;
+    }
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (!leavingViaLink && window.location.pathname.includes("biglietti.php")) {
+        localStorage.removeItem('bigliettiAttivo');
+        navigator.sendBeacon('clear_session.php');
+    }
+});
+
 
 
 

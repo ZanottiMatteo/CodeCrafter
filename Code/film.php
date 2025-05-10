@@ -32,7 +32,7 @@
             <label for="end-date"><i class="far fa-calendar-alt"></i>Data finale:</label>
             <input type="date" id="end-date" name="end-date" value="<?= htmlspecialchars($_GET['end-date'] ?? '') ?>">
           </div>
-          <button type="submit" class="btn-search"><i class="fas fa-search"></i></button>
+          <button type="submit" class="btn-search1"><i class="fas fa-search"></i></button>
         </form>
       </div>
     </section>

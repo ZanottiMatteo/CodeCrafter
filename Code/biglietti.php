@@ -1,7 +1,16 @@
 <?php
-$filmId = isset($_GET['film']) ? intval($_GET['film']) : 0;
-$dateParam = isset($_GET['date']) ? $_GET['date'] : '';
-$timeParam = isset($_GET['orario']) ? $_GET['orario'] : '';
+session_start();
+
+$filmId = isset($_GET['film']) ? intval($_GET['film']) : ($_SESSION['film'] ?? 0);
+$dateParam = isset($_GET['date']) ? $_GET['date'] : ($_SESSION['date'] ?? '');
+$timeParam = isset($_GET['orario']) ? $_GET['orario'] : ($_SESSION['orario'] ?? '');
+
+if (isset($_GET['film']))
+  $_SESSION['film'] = $filmId;
+if (isset($_GET['date']))
+  $_SESSION['date'] = $dateParam;
+if (isset($_GET['orario']))
+  $_SESSION['orario'] = $timeParam;
 
 require 'connect.php';
 $stmt = $conn->prepare(
