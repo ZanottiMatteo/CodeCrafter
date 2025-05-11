@@ -14,6 +14,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['nome'] = $user['nome'];
+    $_SESSION['mail'] = $mail;
     echo json_encode([
         "success" => true,
         "nome" => $user['nome']

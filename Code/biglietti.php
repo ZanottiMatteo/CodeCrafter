@@ -18,8 +18,7 @@ if (isset($_GET['orario'])) {
   unset($_SESSION['orario']);
 }
 
-
-require 'connect.php';
+include 'connect.php';
 $stmt = $conn->prepare(
   "SELECT titolo, durata, lingua
      FROM Film
