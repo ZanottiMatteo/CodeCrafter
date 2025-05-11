@@ -12,10 +12,20 @@ $nomeUtente = $_SESSION['nome'] ?? '';
     <div class="user-actions">
       <?php if ($isLoggedIn): ?>
         <div class="user-area">
-          <img src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png" alt="User" class="user-icon">
+          <div class="user-menu">
+            <img src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png" alt="User" class="user-icon">
+            <div class="menu-dropdown">
+              <a href="biglietti.php">
+                <img src="https://cdn-icons-png.flaticon.com/128/833/833314.png" alt="Icona Biglietti"
+                  class="menu-icon">
+                I miei biglietti
+              </a>
+            </div>
+          </div>
           <span class="user-name"><?= htmlspecialchars($nomeUtente) ?></span>
           <form method="post" action="logout.php">
-            <button type="submit" class="logout-btn"><img src="https://cdn-icons-png.flaticon.com/128/1828/1828427.png" alt="Logout" class="logout-icon"> Logout</button>
+            <button type="submit" class="logout-btn"><img src="https://cdn-icons-png.flaticon.com/128/1828/1828427.png"
+                alt="Logout" class="logout-icon"> Logout</button>
           </form>
         </div>
       <?php else: ?>
