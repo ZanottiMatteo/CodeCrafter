@@ -15,10 +15,10 @@ $nomeUtente = $_SESSION['nome'] ?? '';
           <div class="user-menu">
             <img src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png" alt="User" class="user-icon">
             <div class="menu-dropdown">
-              <a href="biglietti.php">
+              <a href="carrello.php">
                 <img src="https://cdn-icons-png.flaticon.com/128/833/833314.png" alt="Icona Biglietti"
                   class="menu-icon">
-                I miei biglietti
+                I miei acquisti
               </a>
             </div>
           </div>
