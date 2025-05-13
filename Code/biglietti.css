@@ -143,7 +143,7 @@
     text-align: center;
     font-size: 1.4rem;
     font-weight: 400;
-    margin: 1rem auto;
+    margin: 1.5rem auto;
     border-radius: 15px;
     text-align: center;
     width: 80%;
@@ -193,7 +193,6 @@
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
-    margin-top: 40px;
 }
 
 .time-slot {

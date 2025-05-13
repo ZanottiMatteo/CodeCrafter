@@ -6,13 +6,13 @@ $data = $_GET['data'] ?? '';
 $ora = $_GET['ora'] ?? '';
 
 if (!$film || !$data || !$ora) {
-    http_response_code(400);
-    echo json_encode(['proiezioneId' => null, 'message' => 'Parametri mancanti']);
-    exit;
+  http_response_code(400);
+  echo json_encode(['proiezioneId' => null, 'message' => 'Parametri mancanti']);
+  exit;
 }
 
 $stmt = $conn->prepare("
-  SELECT numProiezione
+  SELECT numProiezione, sala
   FROM Proiezione
   WHERE filmProiettato = :film
     AND data = :data
@@ -21,10 +21,23 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->execute([
-    ':film' => $film,
-    ':data' => $data,
-    ':ora' => $ora
+  ':film' => $film,
+  ':data' => $data,
+  ':ora' => $ora
 ]);
 
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-echo json_encode(['proiezioneId' => $row['numProiezione'] ?? null]);
+
+if ($row) {
+  echo json_encode([
+    'proiezioneId' => $row['numProiezione'],
+    'sala' => $row['sala']
+  ]);
+} else {
+  http_response_code(404);
+  echo json_encode([
+    'proiezioneId' => null,
+    'sala' => null,
+    'message' => 'Proiezione non trovata'
+  ]);
+}

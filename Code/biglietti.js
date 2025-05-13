@@ -1,5 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasFilm = urlParams.has('film');
+  const hasDate = urlParams.has('date');
+  const hasSala = urlParams.has('sala');
+
+  if ((hasFilm || hasDate) && !hasSala) {
+    const salaSpan = document.getElementById('sala');
+    if (salaSpan) salaSpan.textContent = '';
+
+    urlParams.delete('sala');
+    history.replaceState(null, '', '?' + urlParams.toString());
+  }
+
   const SEAT_TYPES = {
     VIP: { price: 18, class: 'vip', seats: ['A1', 'A2', 'A7', 'A8'] },
     STANDARD: { price: 12, class: 'standard' }
@@ -46,12 +59,60 @@ document.addEventListener('DOMContentLoaded', function () {
     slot.addEventListener('click', () => {
       uiElements.timeSlots.forEach(t => t.classList.remove('selected'));
       slot.classList.add('selected', 'rubberBand');
+
       const fullTime = slot.getAttribute('data-time');
-      bookingState.selectedTime = fullTime.slice(0, 5);
-      caricaSalaEGeneraPosti();
+      const orario = fullTime.slice(0, 5);
+      bookingState.selectedTime = orario;
+
+      const url = new URL(window.location.href);
+      const allFilmParams = urlParams.getAll('film');
+      const filmId = allFilmParams[allFilmParams.length - 1];
+      const data = url.searchParams.get('date');
+
+      fetch(`get_proiezione_id.php?film=${filmId}&data=${data}&ora=${orario}:00`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          console.log('Risposta fetch:', data);
+          if (data && data.sala) {
+            const sala = data.sala;
+            const url = new URL(window.location.href);
+            url.searchParams.set('orario', orario);
+            url.searchParams.set('sala', sala);
+            history.replaceState(null, '', url.toString());
+
+            document.getElementById('sala').textContent = sala;
+            generateSeatsFromSala(sala);
+          } else {
+            showCustomAlert('error', 'Sala non trovata per questo orario');
+          }
+        })
+        .catch(err => {
+          console.error('Errore durante la richiesta:', err);
+          showCustomAlert('error', 'Errore nel caricamento della sala');
+        });
       updateSteps(2);
     });
   });
+
+
+  function generateSeatsFromSala(salaId) {
+    fetch(`get_sala_data.php?id=${salaId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.numFile && data.numPostiPerFila) {
+          generateSeats(data.numPostiPerFila, data.numFile);
+        } else {
+          console.error('Dati sala non validi', data);
+        }
+      })
+      .catch(err => {
+        console.error('Errore nel recupero dati sala:', err);
+        showCustomAlert('error', 'Errore durante il caricamento della sala');
+      });
+  }
 
   function generateSeats(numRighe, numColonne) {
     uiElements.seatsGrid.innerHTML = '';
@@ -66,20 +127,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const seat = createSeatElement(seatNumber, occupiedSeats);
         rowDiv.appendChild(seat);
       }
-
       uiElements.seatsGrid.appendChild(rowDiv);
     }
-
     animateElements('.seat', 'bounceIn');
   }
-
-
 
   function caricaSalaEGeneraPosti() {
     const urlParams = new URLSearchParams(window.location.search);
     const salaId = urlParams.get('sala');
 
-    if (!salaId) return;
+    if (!salaId) {
+      document.getElementById('sala').textContent = '';
+      return;
+    }
 
     fetch(`get_sala_data.php?id=${salaId}`)
       .then(res => res.json())
@@ -87,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.numFile && data.numPostiPerFila) {
           console.log('numero file', data.numFile)
           console.log('numero posti per fila', data.numPostiPerFila)
-          generateSeats(parseInt(data.numFile), parseInt(data.numPostiPerFila));
+          generateSeats(data.numPostiPerFila, data.numFile);
         } else {
           console.error('Dati sala non validi', data);
         }
@@ -128,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
       bookingState.totalPrice -= price;
       if (bookingState.totalPrice === 0) updateSteps(2);
     }
-
     updateCart();
   }
 
@@ -287,6 +346,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function showCustomAlert(icon, title, text = '') {
     Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
+  }
+
+  function resetSala() {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('sala');
+    history.replaceState(null, '', '?' + urlParams.toString());
+
+    const salaLabel = document.getElementById('sala');
+    if (salaLabel) salaLabel.textContent = '';
   }
 
   function updateSteps(step) {

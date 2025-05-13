@@ -10,17 +10,22 @@ $salaParam = isset($_GET['sala']) ? $_GET['sala'] : ($_SESSION['sala'] ?? '');
 if (isset($_GET['film'])) {
   $_SESSION['film'] = $filmId;
   unset($_SESSION['orario']);
+  unset($_SESSION['sala']);
 }
 if (isset($_GET['date'])) {
   $_SESSION['date'] = $dateParam;
   unset($_SESSION['orario']);
+  unset($_SESSION['sala']);
 }
 if (isset($_GET['orario'])) {
   $_SESSION['orario'] = substr($_GET['orario'], 0, 5);
   unset($_SESSION['orario']);
+  unset($_SESSION['sala']);
 }
 if (isset($_GET['sala'])) {
   $_SESSION['sala'] = $salaParam;
+  unset($_SESSION['orario']);
+  unset($_SESSION['sala']);
 }
 
 include 'connect.php';
@@ -121,10 +126,6 @@ $conn = null;
             <span id="data" class="selected-date"><?= htmlspecialchars($dateParam) ?></span>
           </div>
           <div class="sala-picker">
-            <h3>Sala:</h3>
-            <span id="sala" class="selected-date"><?= htmlspecialchars($salaParam) ?></span>
-          </div>
-          <div class="sala-picker">
             <h3>Orari disponibili:</h3>
           </div>
           <div class="time-slots">
@@ -139,6 +140,10 @@ $conn = null;
             <?php else: ?>
               <p>Nessun orario disponibile per questa data.</p>
             <?php endif; ?>
+          </div>
+          <div class="sala-picker">
+            <h3>Sala:</h3>
+            <span id="sala" class="selected-date"><?= htmlspecialchars($salaParam) ?></span>
           </div>
         </div>
       </div>
