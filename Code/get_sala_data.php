@@ -1,5 +1,5 @@
 <?php
-require_once 'connect.php';
+include 'connect.php';
 header('Content-Type: application/json');
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {

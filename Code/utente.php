@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-// Verifica accesso
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php'); // o index.php o dove vuoi reindirizzare
+    header('Location: login.php');
     exit;
 }
 
-// Accesso garantito, recupera nome e mail
 $nomeUtente = $_SESSION['nome'];
 $mailUtente = $_SESSION['mail'];
 

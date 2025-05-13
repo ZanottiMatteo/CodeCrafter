@@ -70,7 +70,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const url = new URL(window.location.href);
             url.searchParams.set('orario', orario);
             url.searchParams.set('sala', sala);
-            history.replaceState(null, '', url.toString());
+            console.log(sala, orario)
+
+            fetch('salva_parametri.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orario, sala })
+            }).then(() => {
+              history.replaceState(null, '', url.toString());
+            });
+
 
             document.getElementById('sala').textContent = sala;
             generateSeatsFromSala(sala);

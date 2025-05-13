@@ -6,6 +6,15 @@ $dateParam = isset($_GET['date']) ? $_GET['date'] : ($_SESSION['date'] ?? '');
 $timeParam = isset($_GET['orario']) ? substr($_GET['orario'], 0, 5) : ($_SESSION['orario'] ?? '');
 $salaParam = isset($_GET['sala']) ? $_GET['sala'] : ($_SESSION['sala'] ?? '');
 
+if (
+  (!isset($_GET['film']) || !isset($_GET['date']) || !isset($_GET['orario']) || !isset($_GET['sala'])) &&
+  $filmId && $dateParam && $timeParam && $salaParam
+) {
+
+  $redirectUrl = "biglietti.php?film=$filmId&date=$dateParam&orario=$timeParam&sala=$salaParam";
+  header("Location: $redirectUrl");
+  exit;
+}
 
 if (isset($_GET['film'])) {
   $_SESSION['film'] = $filmId;
