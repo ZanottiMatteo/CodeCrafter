@@ -9,23 +9,15 @@ $salaParam = isset($_GET['sala']) ? $_GET['sala'] : ($_SESSION['sala'] ?? '');
 
 if (isset($_GET['film'])) {
   $_SESSION['film'] = $filmId;
-  unset($_SESSION['orario']);
-  unset($_SESSION['sala']);
 }
 if (isset($_GET['date'])) {
   $_SESSION['date'] = $dateParam;
-  unset($_SESSION['orario']);
-  unset($_SESSION['sala']);
 }
 if (isset($_GET['orario'])) {
   $_SESSION['orario'] = substr($_GET['orario'], 0, 5);
-  unset($_SESSION['orario']);
-  unset($_SESSION['sala']);
 }
 if (isset($_GET['sala'])) {
   $_SESSION['sala'] = $salaParam;
-  unset($_SESSION['orario']);
-  unset($_SESSION['sala']);
 }
 
 include 'connect.php';

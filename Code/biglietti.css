@@ -283,17 +283,17 @@
     margin-bottom: 20px;
 }
 
-.seat.available:hover {
+.seat.available:not(.selected):hover {
     background: #d64d4d;
     transform: scale(1.1);
 }
 
-.seat.selected {
+.seat.selected, .seat.vip.selected {
     background: #0077ff;
     transform: scale(1.1);
 }
 
-.seat.occupied {
+.seat.occupied, .seat.vip.occupied {
     background: #000000;
     cursor: not-allowed;
 }

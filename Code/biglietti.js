@@ -1,20 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   const urlParams = new URLSearchParams(window.location.search);
-  const hasFilm = urlParams.has('film');
-  const hasDate = urlParams.has('date');
-  const hasSala = urlParams.has('sala');
-
-  if ((hasFilm || hasDate) && !hasSala) {
-    const salaSpan = document.getElementById('sala');
-    if (salaSpan) salaSpan.textContent = '';
-
-    urlParams.delete('sala');
-    history.replaceState(null, '', '?' + urlParams.toString());
-  }
 
   const SEAT_TYPES = {
-    VIP: { price: 18, class: 'vip', seats: ['A1', 'A2', 'A7', 'A8'] },
+    VIP: { price: 18, class: 'vip' },
     STANDARD: { price: 12, class: 'standard' }
   };
 
@@ -97,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-
   function generateSeatsFromSala(salaId) {
     fetch(`get_sala_data.php?id=${salaId}`)
       .then(res => res.json())
@@ -115,22 +103,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function generateSeats(numRighe, numColonne) {
-    uiElements.seatsGrid.innerHTML = '';
-    const occupiedSeats = getOccupiedSeats();
+    getOccupiedSeats().then(occupiedSeats => {
+      console.log(occupiedSeats)
+      uiElements.seatsGrid.innerHTML = '';
 
-    for (let riga = 0; riga < numRighe; riga++) {
-      const rowDiv = document.createElement('div');
-      rowDiv.className = 'seat-row';
+      for (let riga = 0; riga < numRighe; riga++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'seat-row';
 
-      for (let colonna = 0; colonna < numColonne; colonna++) {
-        const seatNumber = `${String.fromCharCode(65 + riga)}${colonna + 1}`;
-        const seat = createSeatElement(seatNumber, occupiedSeats);
-        rowDiv.appendChild(seat);
+        for (let colonna = 0; colonna < numColonne; colonna++) {
+          const seatNumber = `${String.fromCharCode(65 + riga)}${colonna + 1}`;
+          const seat = createSeatElement(seatNumber, occupiedSeats, colonna, numColonne);
+          rowDiv.appendChild(seat);
+        }
+        uiElements.seatsGrid.appendChild(rowDiv);
       }
-      uiElements.seatsGrid.appendChild(rowDiv);
-    }
-    animateElements('.seat', 'bounceIn');
+      animateElements('.seat', 'bounceIn');
+    });
   }
+
 
   function caricaSalaEGeneraPosti() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -158,9 +149,8 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-
-  function createSeatElement(seatNumber, occupiedSeats) {
-    const isVIP = SEAT_TYPES.VIP.seats.includes(seatNumber);
+  function createSeatElement(seatNumber, occupiedSeats, riga, numRighe) {
+    const isVIP = riga >= numRighe - 2;
     const seatType = isVIP ? SEAT_TYPES.VIP : SEAT_TYPES.STANDARD;
     const seat = document.createElement('div');
 
@@ -171,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!seat.classList.contains('occupied')) {
       seat.addEventListener('click', () => toggleSeatSelection(seat, seatNumber, seatType.price));
     }
-
     return seat;
   }
 
@@ -201,8 +190,37 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getOccupiedSeats() {
-    return [];
+    const urlParams = new URLSearchParams(window.location.search);
+    const allFilmParams = urlParams.getAll('film');
+    const filmId = allFilmParams.length ? allFilmParams[allFilmParams.length - 1] : null;
+    const data = urlParams.get('date');
+    const orario = bookingState.selectedTime ? bookingState.selectedTime + ':00' : urlParams.get('orario');
+    console.log(filmId, data, orario)
+
+    if (!filmId || !data || !orario) {
+      console.warn('⚠️ Parametri mancanti per recupero posti occupati');
+      return Promise.resolve([]);
+    }
+
+    return fetch(`get_proiezione_id.php?film=${filmId}&data=${data}&ora=${orario}`)
+      .then(res => res.json())
+      .then(data => {
+        const proiezioneId = data.proiezioneId;
+        if (!proiezioneId) return [];
+        return fetch(`get_posti_occupati.php?proiezione=${proiezioneId}`)
+          .then(res => res.json())
+          .then(posti => {
+            console.log('🎟️ Posti occupati:', posti);
+            return posti;
+          });
+      })
+      .catch(err => {
+        console.error('Errore durante getOccupiedSeats:', err);
+        return [];
+      });
   }
+
+
 
   document.querySelector('.apply-promo').addEventListener('click', () => {
     const promoCode = uiElements.promoInput.value.toUpperCase();
@@ -302,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-
   function inviaMail(email, film) {
     const payload = {
       email,
@@ -346,15 +363,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function showCustomAlert(icon, title, text = '') {
     Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
-  }
-
-  function resetSala() {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.delete('sala');
-    history.replaceState(null, '', '?' + urlParams.toString());
-
-    const salaLabel = document.getElementById('sala');
-    if (salaLabel) salaLabel.textContent = '';
   }
 
   function updateSteps(step) {
