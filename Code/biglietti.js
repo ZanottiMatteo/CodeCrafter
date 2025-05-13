@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (shortTime === preselectedTime.slice(0, 5)) {
         slot.classList.add('selected');
         bookingState.selectedTime = shortTime;
-        generateSeats();
+        caricaSalaEGeneraPosti();
         updateSteps(2);
       }
     });
@@ -48,22 +48,21 @@ document.addEventListener('DOMContentLoaded', function () {
       slot.classList.add('selected', 'rubberBand');
       const fullTime = slot.getAttribute('data-time');
       bookingState.selectedTime = fullTime.slice(0, 5);
-      generateSeats();
+      caricaSalaEGeneraPosti();
       updateSteps(2);
     });
   });
 
-  function generateSeats() {
+  function generateSeats(numRighe, numColonne) {
     uiElements.seatsGrid.innerHTML = '';
-    const rows = 20, cols = 10;
     const occupiedSeats = getOccupiedSeats();
 
-    for (let row = 0; row < rows; row++) {
+    for (let riga = 0; riga < numRighe; riga++) {
       const rowDiv = document.createElement('div');
       rowDiv.className = 'seat-row';
 
-      for (let col = 0; col < cols; col++) {
-        const seatNumber = `${String.fromCharCode(65 + row)}${col + 1}`;
+      for (let colonna = 0; colonna < numColonne; colonna++) {
+        const seatNumber = `${String.fromCharCode(65 + riga)}${colonna + 1}`;
         const seat = createSeatElement(seatNumber, occupiedSeats);
         rowDiv.appendChild(seat);
       }
@@ -73,6 +72,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     animateElements('.seat', 'bounceIn');
   }
+
+
+
+  function caricaSalaEGeneraPosti() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const salaId = urlParams.get('sala');
+
+    if (!salaId) return;
+
+    fetch(`get_sala_data.php?id=${salaId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.numFile && data.numPostiPerFila) {
+          console.log('numero file', data.numFile)
+          console.log('numero posti per fila', data.numPostiPerFila)
+          generateSeats(parseInt(data.numFile), parseInt(data.numPostiPerFila));
+        } else {
+          console.error('Dati sala non validi', data);
+        }
+      })
+      .catch(err => {
+        console.error('Errore nel recupero dati sala:', err);
+        showCustomAlert('error', 'Errore durante il caricamento della sala');
+      });
+  }
+
 
   function createSeatElement(seatNumber, occupiedSeats) {
     const isVIP = SEAT_TYPES.VIP.seats.includes(seatNumber);
@@ -270,5 +295,5 @@ document.addEventListener('DOMContentLoaded', function () {
       el.classList.toggle('completed', idx < step);
     });
   }
-  generateSeats();
+  caricaSalaEGeneraPosti();
 });
