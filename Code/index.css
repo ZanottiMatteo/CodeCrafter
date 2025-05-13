@@ -192,13 +192,12 @@ body.no-scroll {
 }
 
 .carousel-wrapper {
-  max-width: 1600px;
   margin: 0 auto;
   position: relative;
   display: flex;
   align-items: center;
   overflow: visible;
-  max-width: 960px;
+  max-width: 1280px;
 }
 
 .movie-carousel {
