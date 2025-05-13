@@ -4,6 +4,8 @@ session_start();
 $filmId = isset($_GET['film']) ? intval($_GET['film']) : ($_SESSION['film'] ?? 0);
 $dateParam = isset($_GET['date']) ? $_GET['date'] : ($_SESSION['date'] ?? '');
 $timeParam = isset($_GET['orario']) ? substr($_GET['orario'], 0, 5) : ($_SESSION['orario'] ?? '');
+$salaParam = isset($_GET['sala']) ? $_GET['sala'] : ($_SESSION['sala'] ?? '');
+
 
 if (isset($_GET['film'])) {
   $_SESSION['film'] = $filmId;
@@ -16,6 +18,9 @@ if (isset($_GET['date'])) {
 if (isset($_GET['orario'])) {
   $_SESSION['orario'] = substr($_GET['orario'], 0, 5);
   unset($_SESSION['orario']);
+}
+if (isset($_GET['sala'])) {
+  $_SESSION['sala'] = $salaParam;
 }
 
 include 'connect.php';
@@ -117,10 +122,10 @@ $conn = null;
           </div>
           <div class="sala-picker">
             <h3>Sala:</h3>
-            <span id="sala" class="selected-date"><?= htmlspecialchars($filmData['sala']) ?></span>
+            <span id="sala" class="selected-date"><?= htmlspecialchars($salaParam) ?></span>
           </div>
           <div class="sala-picker">
-          <h3>Orari disponibili:</h3>
+            <h3>Orari disponibili:</h3>
           </div>
           <div class="time-slots">
             <?php if (count($times)): ?>
