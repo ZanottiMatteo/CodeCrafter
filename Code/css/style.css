@@ -7,7 +7,7 @@
 :root {
   --primary-color: #750000;
   --secondary-color: #ffffff;
-  --primary-color-lighter: #ff0000;
+  --primary-color-lighter: #b90000;
   --dark-color: #222;
   --light-color: #cececeb2;
   --gray-color: #6c757d;
@@ -35,7 +35,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 0 1rem;
 }
@@ -526,12 +526,6 @@ nav ul li.active {
   background-color: var(--primary-color);
 }
 
-.user-icon {
-  width: 32px;
-  height: 32px;
-  filter: brightness(0) invert(1);
-}
-
 .logout-icon {
   width: 20px;
   height: 20px;
@@ -544,60 +538,4 @@ nav ul li.active {
   pointer-events: none;
   opacity: 0.5;
   cursor: default;
-}
-
-.user-menu {
-  position: relative;
-  display: inline-block;
-}
-
-.user-icon {
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-}
-
-.menu-dropdown {
-  display: none;
-  position: absolute;
-  top: 40px;
-  right: -70px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  min-width: 150px;
-  z-index: 200;
-  padding: 10px;
-}
-
-.menu-dropdown a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  color: #333;
-  text-decoration: none;
-  border-radius: 4px;
-  white-space: nowrap;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.menu-dropdown a:hover {
-  background-color: #ff0000;
-  color: white;
-}
-
-.user-menu:hover .menu-dropdown {
-  display: block;
-}
-
-.menu-dropdown a:hover .menu-icon {
-  filter: brightness(0) invert(1);
-}
-
-.menu-icon {
-  width: 20px;
-  height: 20px;
-  transition: filter 0.3s ease;
 }

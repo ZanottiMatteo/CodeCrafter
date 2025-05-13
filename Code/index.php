@@ -50,7 +50,7 @@
 
                     <div class="form-group">
                         <label for="sala"><i class="fas fa-theater-masks"></i> Sala:</label>
-                        <div id="sala" class="sala"></div>
+                        <div id="sala" class="sala" name="sala"></div>
                     </div>
                     <button type="submit" class="btn-search"><i class="fas fa-search"></i></button>
                 </form>

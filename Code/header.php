@@ -12,16 +12,6 @@ $nomeUtente = $_SESSION['nome'] ?? '';
     <div class="user-actions">
       <?php if ($isLoggedIn): ?>
         <div class="user-area">
-          <div class="user-menu">
-            <img src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png" alt="User" class="user-icon">
-            <div class="menu-dropdown">
-              <a href="carrello.php">
-                <img src="https://cdn-icons-png.flaticon.com/128/833/833314.png" alt="Icona Biglietti"
-                  class="menu-icon">
-                I miei acquisti
-              </a>
-            </div>
-          </div>
           <span class="user-name"><?= htmlspecialchars($nomeUtente) ?></span>
           <form method="post" action="logout.php">
             <button type="submit" class="logout-btn"><img src="https://cdn-icons-png.flaticon.com/128/1828/1828427.png"

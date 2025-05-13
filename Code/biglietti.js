@@ -156,66 +156,68 @@ document.addEventListener('DOMContentLoaded', function () {
       const urlParams = new URLSearchParams(window.location.search);
       const allFilmParams = urlParams.getAll('film');
       const filmId = allFilmParams.length ? allFilmParams[allFilmParams.length - 1] : null;
-      const date = new URLSearchParams(window.location.search).get('date');
-      let orario = bookingState.selectedTime || new URLSearchParams(window.location.search).get('orario');
-      console.log(orario)
-      console.log(filmId)
-      console.log(date)
-      if (orario && orario.length === 5) {
-        orario += ':00';
-      }
+      const date = urlParams.get('date');
+      let orario = bookingState.selectedTime || urlParams.get('orario');
+      if (orario && orario.length === 5) orario += ':00';
 
       fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${orario}`)
         .then(res => res.json())
         .then(data => {
           const proiezioneId = data.proiezioneId;
-          console.log({
-            proiezioneId,
-            posti: bookingState.selectedSeats.map(s => s.number),
-            prezzi: bookingState.selectedSeats.map(s => s.price)
-          });
 
-          return fetch('salva_biglietti.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              proiezioneId,
-              posti: bookingState.selectedSeats.map(s => s.number),
-              prezzi: bookingState.selectedSeats.map(s => s.price)
-            })
-          });
-        })
-        .then(res => res.json())
-        .then(response => {
-          console.log('RISPOSTA SERVER:', response);
-          if (response.status === 'ok') {
-            if (typeof userMail !== 'undefined' && userMail) {
-              inviaMail(userMail, filmTitle);
-            } else {
-              Swal.fire({
-                title: 'Inserisci la tua email',
-                input: 'email',
-                inputLabel: 'Riceverai il riepilogo della prenotazione',
-                inputPlaceholder: 'email@example.com',
-                showCancelButton: true,
-                confirmButtonText: 'Invia'
-              }).then(input => {
-                if (input.isConfirmed && input.value) {
-                  inviaMail(input.value, filmTitle);
-                }
-              });
-            }
+          const chiediMail = () => {
+            Swal.fire({
+              title: 'Inserisci la tua email',
+              input: 'email',
+              inputLabel: 'Riceverai il riepilogo della prenotazione',
+              inputPlaceholder: 'email@example.com',
+              showCancelButton: true,
+              confirmButtonText: 'Invia'
+            }).then(input => {
+              if (input.isConfirmed && input.value) {
+                salvaBigliettiEInvia(input.value, filmTitle, proiezioneId);
+              }
+            });
+          };
+
+          if (typeof userMail !== 'undefined' && userMail) {
+            salvaBigliettiEInvia(userMail, filmTitle, proiezioneId);
           } else {
-            showCustomAlert('error', 'Errore durante il salvataggio dei biglietti');
+            chiediMail();
           }
         })
         .catch(err => {
           showCustomAlert('error', 'Errore di rete o server');
           console.error('FETCH FAILED:', err);
-
         });
     });
   });
+
+  function salvaBigliettiEInvia(email, filmTitle, proiezioneId) {
+    fetch('salva_biglietti.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        proiezioneId,
+        posti: bookingState.selectedSeats.map(s => s.number),
+        prezzi: bookingState.selectedSeats.map(s => s.price),
+        mail: email
+      })
+    })
+      .then(res => res.json())
+      .then(response => {
+        if (response.status === 'ok') {
+          inviaMail(email, filmTitle);
+        } else {
+          showCustomAlert('error', 'Errore durante il salvataggio dei biglietti');
+        }
+      })
+      .catch(err => {
+        showCustomAlert('error', 'Errore di rete o server');
+        console.error('FETCH FAILED:', err);
+      });
+  }
+
 
   function inviaMail(email, film) {
     const payload = {

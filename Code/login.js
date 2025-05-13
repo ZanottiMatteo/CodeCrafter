@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = inputs[2].value;
         const confirm = inputs[3].value;
 
-        if (password !== confirm) return alert("Le password non coincidono!");
+        if (password !== confirm) return showCustomAlert('error', "Le password non coincidono!");
 
         const res = await fetch('auth_register.php', {
             method: 'POST',
@@ -80,11 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (result.success) {
-            alert("Registrazione completata!");
+            showCustomAlert('success', "Registrazione completata!");
             e.target.reset();
             showLogin();
         } else {
-            alert(result.message || "Errore");
+            showCustomAlert('error', "Errore nella registrazione: Utente già registrato");
         }
 
     });
@@ -115,7 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) {
             window.location.href = "index.php";
         } else {
-            alert(result.message || "Errore nel login");
+            showCustomAlert('error', "Errore nel login: Password e/o Mail errata!");
         }
     });
+
+    function showCustomAlert(icon, title, text = '') {
+        Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
+    }
 });

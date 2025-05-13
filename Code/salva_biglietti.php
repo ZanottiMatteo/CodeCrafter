@@ -1,29 +1,27 @@
 <?php
 session_start();
 require 'connect.php';
-
 header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!$data || !isset($data['proiezioneId'], $data['posti'], $data['prezzi'])) {
+if (
+    !$data ||
+    !isset($data['proiezioneId'], $data['posti'], $data['prezzi']) ||
+    count($data['posti']) !== count($data['prezzi'])
+) {
     http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => 'Dati mancanti']);
+    echo json_encode(['status' => 'error', 'message' => 'Dati mancanti o non validi']);
     exit;
 }
 
 $proiezioneId = $data['proiezioneId'];
 $posti = $data['posti'];
 $prezzi = $data['prezzi'];
+$email = isset($data['mail']) ? trim($data['mail']) : null;
 
-if (count($posti) !== count($prezzi)) {
-    http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => 'Posti e prezzi non corrispondono']);
-    exit;
-}
-
-$sql = "INSERT INTO Biglietto (numProiezione, numFila, numPosto, dataVendita, prezzo)
-        VALUES (:numProiezione, :numFila, :numPosto, NOW(), :prezzo)";
+$sql = "INSERT INTO Biglietto (numProiezione, numFila, numPosto, dataVendita, prezzo, email)
+        VALUES (:numProiezione, :numFila, :numPosto, NOW(), :prezzo, :email)";
 $stmt = $conn->prepare($sql);
 
 try {
@@ -34,7 +32,8 @@ try {
             ':numProiezione' => $proiezioneId,
             ':numFila' => $fila,
             ':numPosto' => $numero,
-            ':prezzo' => $prezzi[$i]
+            ':prezzo' => $prezzi[$i],
+            ':email' => $email
         ]);
     }
 
@@ -43,10 +42,15 @@ try {
         'debug' => [
             'proiezioneId' => $proiezioneId,
             'posti' => $posti,
-            'prezzi' => $prezzi
+            'prezzi' => $prezzi,
+            'email' => $email
         ]
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Errore DB', 'error' => $e->getMessage()]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Errore DB',
+        'error' => $e->getMessage()
+    ]);
 }
