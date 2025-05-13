@@ -20,9 +20,19 @@
   ?>
 
   <main class="content">
-    <h1>Tutti i biglietti prenotati</h1>
+    <div class="user-card">
+      <h1>Informazioni profilo</h1>
+      <div class="avatar">
+        <img src="<?= htmlspecialchars($user['avatar_url']) ?>" alt="Avatar di <?= htmlspecialchars($user['nome']) ?>">
+      </div>
+      <div class="user-info">
+        <p><strong>Nome:</strong> <?= htmlspecialchars($user['nome']) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+      </div>
+    </div>
 
     <div class="ticket-list">
+      <h1>Tutti i biglietti prenotati</h1>
       <?php
       require 'connect.php';
       setlocale(LC_TIME, 'it_IT.UTF-8');
