@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         ? `<img src="https://cdn-icons-png.flaticon.com/128/83/83596.png" class="sala-icon">`
                         : `<img src="https://cdn-icons-png.flaticon.com/128/83/83467.png" class="sala-icon">`;
                     salaSelect.innerHTML = `Sala ${info.numero} ${icon}`;
-                    salaSelect.value = info.numero;
+                    document.getElementById('sala-hidden').value = info.numero;
                 }
                 updateSubmitState();
             })
@@ -186,13 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (raw) {
             const [year, month, day] = raw.split('-');
             dataSelect.value = `${day}/${month}/${year}`;
-        }
-        const salaNumero = salaSelect.value;
-        console.log("SALA NEL FORM:", salaNumero);
-        if (salaNumero) {
-            const currentAction = new URL(form.action || window.location.href);
-            currentAction.searchParams.set('sala', salaNumero);
-            form.action = currentAction.toString();
         }
     });
 });
