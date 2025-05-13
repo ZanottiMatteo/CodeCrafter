@@ -83,18 +83,13 @@
 }
 
 /* Movie Selection */
-.movie-card:hover {
-    transform: translateY(-5px) rotateX(3deg) rotateY(3deg);
-    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
-}
-
 .movie-card {
     border-radius: 12px;
     width: 500px;
     height: 700px;
     overflow: hidden;
     transition: transform 0.3s ease;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transform-style: preserve-3d;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: movieSlideIn 0.8s ease-out both;
@@ -134,8 +129,8 @@
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
-    background: #b90000;
-    border-radius: 10px;
+    background: linear-gradient(180deg, var(--primary-color), var(--primary-color-lighter));
+    border-radius: 15px;
 }
 
 .datetime-picker .movie-title,

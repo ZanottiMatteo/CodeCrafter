@@ -111,7 +111,7 @@
 
                 <div class="movie-poster" style="background-image: url(\'' . $imgUrl . '\')"></div>
                 <div class="movie-info">
-                    <h3>' . $titolo . '</h3>
+                    <h2>' . $titolo . '</h2>
                 </div>
               </article>';
             }
