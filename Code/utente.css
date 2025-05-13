@@ -44,6 +44,7 @@
 
 /* Box bianco che contiene tutta la lista */
 .ticket-list {
+  color: black;
   margin: 2rem auto 3rem;          /* margin-top: 7rem, centrato orizzontalmente */
   max-width: 1600px;            /* larghezza massima del box */
   background-color: #fff;       /* sfondo bianco */

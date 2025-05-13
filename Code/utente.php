@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+// Verifica accesso
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php'); // o index.php o dove vuoi reindirizzare
+    exit;
+}
+
+// Accesso garantito, recupera nome e mail
+$nomeUtente = $_SESSION['nome'];
+$mailUtente = $_SESSION['mail'];
+
+include 'connect.php';
+?>
+
 <!DOCTYPE html>
 <html lang="it">
 
@@ -23,11 +39,11 @@
     <div class="user-card">
       <h1>Informazioni profilo</h1>
       <div class="avatar">
-        <img src="<?= htmlspecialchars($user['avatar_url']) ?>" alt="Avatar di <?= htmlspecialchars($user['nome']) ?>">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010">
       </div>
       <div class="user-info">
-        <p><strong>Nome:</strong> <?= htmlspecialchars($user['nome']) ?></p>
-        <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+        <p><strong>Nome:</strong> <?= htmlspecialchars($nomeUtente) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($mailUtente) ?></p>
       </div>
     </div>
 
@@ -49,6 +65,7 @@
           P.sala
         FROM Biglietto B
         JOIN Proiezione P ON B.numProiezione = P.numProiezione
+        WHERE B.email = '$mailUtente'
         ORDER BY B.dataVendita DESC
       ");
       $biglietti = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -87,7 +104,7 @@
 
         echo "</tbody></table>";
       } else {
-        echo "<p>Nessun biglietto trovato.</p>";
+        echo "<p>Nessun biglietto acquistato.</p>";
       }
       ?>
     </div>
