@@ -115,7 +115,13 @@ $conn = null;
             <h3>Giorno:</h3>
             <span id="data" class="selected-date"><?= htmlspecialchars($dateParam) ?></span>
           </div>
+          <div class="sala-picker">
+            <h3>Sala:</h3>
+            <span id="sala" class="selected-date"><?= htmlspecialchars($filmData['sala']) ?></span>
+          </div>
+          <div class="sala-picker">
           <h3>Orari disponibili:</h3>
+          </div>
           <div class="time-slots">
             <?php if (count($times)): ?>
               <?php foreach ($times as $t):

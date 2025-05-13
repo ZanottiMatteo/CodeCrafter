@@ -184,8 +184,8 @@
                 <div class="promo-cards">
                     <div class="promo-card">
                         <i class="fas fa-child"></i>
-                        <h3>Martedì Bambini</h3>
-                        <p>Tutti i martedì, biglietto a €5 per i bambini sotto i 12 anni</p>
+                        <h3>Giovedì Bambini</h3>
+                        <p>Tutti i giovedì, biglietto a €5 per i bambini sotto i 12 anni</p>
                     </div>
                     <div class="promo-card">
                         <i class="fas fa-user-friends"></i>
