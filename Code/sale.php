@@ -12,12 +12,14 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="sale.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script defer src="js/nav.js"></script>
   <script defer src="sale.js"></script>
 </head>
 
 <body>
-  <?php include 'header.html'; ?>
+  <?php include 'header.php'; ?>
   <?php include 'nav.html'; ?>
 
   <div class="right-content">
@@ -51,7 +53,10 @@
     </main>
   </div>
 
-  <?php include 'footer.html'; ?>
+  <?php
+    include 'footer.html';
+    ?>
+    <script src="footer.js"></script>
 </body>
 
 </html>

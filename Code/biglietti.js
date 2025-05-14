@@ -17,293 +17,298 @@ document.addEventListener('DOMContentLoaded', function () {
     selectedTime: null,
     selectedSeats: [],
     totalPrice: 0,
-    discountApplied: 0
+    discountApplied: 0,
+    currentStep: 1,
+    maxStep: 1
   };
 
-  const uiElements = {
-    steps: document.querySelectorAll('.step'),
+  // UI elements
+  const ui = {
+    steps: document.querySelectorAll('.booking-steps .step'),
     timeSlots: document.querySelectorAll('.time-slot'),
+    sections: {
+      1: document.querySelector('.row-top'),
+      2: document.querySelector('.row-middle'),
+      3: document.querySelector('.row-bottom')
+    },
     seatsGrid: document.querySelector('.seats-grid'),
     seatsList: document.querySelector('.selected-seats'),
-    totalElement: document.getElementById('total'),
-    promoInput: document.querySelector('.promo-section input')
+    totalEl: document.getElementById('total'),
+    promoInput: document.querySelector('.promo-section input'),
+    applyPromo: document.querySelector('.apply-promo'),
+    checkoutBtn: document.querySelector('.checkout-button')
   };
 
-  animateElements('.time-slot', 'fadeIn');
+  // Step navigation & reveal logic
+  function updateSteps(targetStep) {
+    // advance maxStep if we're moving forward
+    if (targetStep > bookingState.maxStep) {
+      bookingState.maxStep = targetStep;
+    }
+    bookingState.currentStep = targetStep;
 
-  const preselectedTime = new URLSearchParams(window.location.search).get('orario');
-  if (preselectedTime) {
-    uiElements.timeSlots.forEach(slot => {
-      const shortTime = slot.getAttribute('data-time')?.slice(0, 5);
-      if (shortTime === preselectedTime.slice(0, 5)) {
-        slot.classList.add('selected');
-        bookingState.selectedTime = shortTime;
-        caricaSalaEGeneraPosti();
-        updateSteps(2);
-      }
+    // show all sections up to maxStep
+    [1, 2, 3].forEach(i => {
+      ui.sections[i].style.display = (i <= bookingState.maxStep ? '' : 'none');
+    });
+
+    // nav highlighting
+    ui.steps.forEach((el, idx) => {
+      const stepNum = idx + 1;
+      el.classList.toggle('active', stepNum === targetStep);
+      el.classList.toggle('completed', stepNum < targetStep);
     });
   }
 
-  uiElements.timeSlots.forEach(slot => {
+  // nav-step click: go back only if clicking a previous step
+  ui.steps.forEach((el, idx) => {
+    el.addEventListener('click', () => {
+      const clicked = idx + 1;
+      if (clicked < bookingState.currentStep) {
+        // reset cart
+        bookingState.selectedSeats = [];
+        bookingState.totalPrice = 0;
+        bookingState.discountApplied = 0;
+        document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+        updateCart();
+        updateSteps(clicked);
+      }
+    });
+  });
+
+  // initial state: only section 1 visible
+  updateSteps(1);
+
+  // select a time slot → fetch sala & go to step 2
+  ui.timeSlots.forEach(slot => {
     slot.addEventListener('click', () => {
-      uiElements.timeSlots.forEach(t => t.classList.remove('selected'));
+      resetCart();
+      ui.timeSlots.forEach(s => s.classList.remove('selected'));
       slot.classList.add('selected', 'rubberBand');
 
       const fullTime = slot.getAttribute('data-time');
       const orario = fullTime.slice(0, 5);
       bookingState.selectedTime = orario;
 
+      // persist in URL & session
       const url = new URL(window.location.href);
-      const allFilmParams = urlParams.getAll('film');
-      const filmId = allFilmParams[allFilmParams.length - 1];
-      const data = url.searchParams.get('date');
-
-      fetch(`get_proiezione_id.php?film=${filmId}&data=${data}&ora=${orario}:00`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
+      const filmParams = urlParams.getAll('film');
+      const filmId = filmParams[filmParams.length - 1];
+      const date = urlParams.get('date');
+      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${orario}:00`)
+        .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
         .then(data => {
-          console.log('Risposta fetch:', data);
-          if (data && data.sala) {
-            const sala = data.sala;
-            const url = new URL(window.location.href);
-            url.searchParams.set('orario', orario);
-            url.searchParams.set('sala', sala);
-            console.log(sala, orario)
-
-            fetch('salva_parametri.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ orario, sala })
-            }).then(() => {
-              history.replaceState(null, '', url.toString());
-            });
-
-
-            document.getElementById('sala').textContent = sala;
-            generateSeatsFromSala(sala);
-          } else {
+          if (!data?.sala) {
             showCustomAlert('error', 'Sala non trovata per questo orario');
+            return;
           }
+          const sala = data.sala;
+          url.searchParams.set('orario', orario);
+          url.searchParams.set('sala', sala);
+          fetch('salva_parametri.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orario, sala })
+          }).finally(() => history.replaceState(null, '', url));
+          document.getElementById('sala').textContent = sala;
+          generateSeatsFromSala(sala);
+          updateSteps(2);
         })
         .catch(err => {
-          console.error('Errore durante la richiesta:', err);
+          console.error(err);
           showCustomAlert('error', 'Errore nel caricamento della sala');
         });
-      updateSteps(2);
     });
   });
 
+  // Carica dati sala + genera seats
   function generateSeatsFromSala(salaId) {
     fetch(`get_sala_data.php?id=${salaId}`)
       .then(res => res.json())
       .then(data => {
         if (data.numFile && data.numPostiPerFila) {
-          generateSeats(data.numPostiPerFila, data.numFile);
+          generateSeats(data.numFile, data.numPostiPerFila);
         } else {
           console.error('Dati sala non validi', data);
+          showCustomAlert('error', 'Errore dati sala');
         }
       })
       .catch(err => {
-        console.error('Errore nel recupero dati sala:', err);
+        console.error(err);
         showCustomAlert('error', 'Errore durante il caricamento della sala');
       });
   }
 
   function generateSeats(numRighe, numColonne) {
-    getOccupiedSeats().then(occupiedSeats => {
-      console.log(occupiedSeats)
-      uiElements.seatsGrid.style.setProperty('--cols', numRighe);
-      uiElements.seatsGrid.innerHTML = '';
+    getOccupiedSeats().then(occupied => {
+      ui.seatsGrid.style.setProperty('--cols', numColonne);
+      ui.seatsGrid.innerHTML = '';
 
+      // per ogni riga (A, B, C…)
       for (let riga = 0; riga < numRighe; riga++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'seat-row';
-
-        for (let colonna = 0; colonna < numColonne; colonna++) {
-          const seatNumber = `${String.fromCharCode(65 + riga)}${colonna + 1}`;
-          const seat = createSeatElement(seatNumber, occupiedSeats, colonna, numColonne);
-          rowDiv.appendChild(seat);
+        // per ogni colonna (1, 2, 3…)
+        for (let col = 0; col < numColonne; col++) {
+          const seatNumber = `${String.fromCharCode(65 + riga)}${col + 1}`;
+          const seatEl = createSeatElement(seatNumber, occupied, riga, numRighe);
+          ui.seatsGrid.appendChild(seatEl);
         }
-        uiElements.seatsGrid.appendChild(rowDiv);
       }
+
       animateElements('.seat', 'bounceIn');
     });
   }
 
 
+
+
   function caricaSalaEGeneraPosti() {
-    const urlParams = new URLSearchParams(window.location.search);
     const salaId = urlParams.get('sala');
-
-    if (!salaId) {
-      document.getElementById('sala').textContent = '';
-      return;
-    }
-
-    fetch(`get_sala_data.php?id=${salaId}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.numFile && data.numPostiPerFila) {
-          console.log('numero file', data.numFile)
-          console.log('numero posti per fila', data.numPostiPerFila)
-          generateSeats(data.numPostiPerFila, data.numFile);
-        } else {
-          console.error('Dati sala non validi', data);
-        }
-      })
-      .catch(err => {
-        console.error('Errore nel recupero dati sala:', err);
-        showCustomAlert('error', 'Errore durante il caricamento della sala');
-      });
+    if (!salaId) return;
+    document.getElementById('sala').textContent = salaId;
+    generateSeatsFromSala(salaId);
   }
 
   function createSeatElement(seatNumber, occupiedSeats, riga, numRighe) {
     const isVIP = riga >= numRighe - 2;
-    const seatType = isVIP ? SEAT_TYPES.VIP : SEAT_TYPES.STANDARD;
+    const type = isVIP ? SEAT_TYPES.VIP : SEAT_TYPES.STANDARD;
     const seat = document.createElement('div');
+    const occupied = occupiedSeats.includes(seatNumber);
 
-    seat.className = `seat ${seatType.class} ${occupiedSeats.includes(seatNumber) ? 'occupied' : 'available'}`;
+    seat.className = `seat ${type.class} ${occupied ? 'occupied' : 'available'}`;
     seat.textContent = seatNumber;
-    seat.title = `Posto ${seatType.class.toUpperCase()} - €${seatType.price}`;
-
-    if (!seat.classList.contains('occupied')) {
-      seat.addEventListener('click', () => toggleSeatSelection(seat, seatNumber, seatType.price));
+    seat.title = `Posto ${type.class.toUpperCase()} - €${type.price}`;
+    seat.setAttribute('data-seat-number', seatNumber);
+    if (!occupied) {
+      seat.addEventListener('click', () => toggleSeatSelection(seat, seatNumber, type.price));
     }
     return seat;
   }
 
   function toggleSeatSelection(seat, seatNumber, price) {
     seat.classList.toggle('selected');
-    seat.classList.add('wobble');
-
     if (seat.classList.contains('selected')) {
       bookingState.selectedSeats.push({ number: seatNumber, price });
       bookingState.totalPrice += price;
-      updateSteps(3);
     } else {
       bookingState.selectedSeats = bookingState.selectedSeats.filter(s => s.number !== seatNumber);
       bookingState.totalPrice -= price;
-      if (bookingState.totalPrice === 0) updateSteps(2);
+    }
+    // selezionato almeno un biglietto → passo 3
+    if (bookingState.selectedSeats.length > 0 && bookingState.currentStep < 3) {
+      updateSteps(3);
+    }
+    // se tolgo ultimo biglietto e sto al 3 → torno al 2
+    if (bookingState.selectedSeats.length === 0 && bookingState.currentStep === 3) {
+      updateSteps(2);
     }
     updateCart();
   }
 
   function updateCart() {
-    uiElements.seatsList.innerHTML = bookingState.selectedSeats
-      .map(seat => `<li>Posto ${seat.number} (€${seat.price})</li>`)
-      .join('');
-
-    const discountedTotal = bookingState.totalPrice * (1 - bookingState.discountApplied / 100);
-    uiElements.totalElement.textContent = discountedTotal.toFixed(2);
+    ui.seatsList.innerHTML = bookingState.selectedSeats
+      .map(s => `<li>Posto ${s.number} (€${s.price})</li>`).join('');
+    const discounted = bookingState.totalPrice * (1 - bookingState.discountApplied / 100);
+    ui.totalEl.textContent = discounted.toFixed(2);
   }
 
   function getOccupiedSeats() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const allFilmParams = urlParams.getAll('film');
-    const filmId = allFilmParams.length ? allFilmParams[allFilmParams.length - 1] : null;
-    const data = urlParams.get('date');
-    const orario = bookingState.selectedTime ? bookingState.selectedTime + ':00' : urlParams.get('orario');
-    console.log(filmId, data, orario)
-
-    if (!filmId || !data || !orario) {
-      console.warn('⚠️ Parametri mancanti per recupero posti occupati');
-      return Promise.resolve([]);
-    }
-
-    return fetch(`get_proiezione_id.php?film=${filmId}&data=${data}&ora=${orario}`)
-      .then(res => res.json())
-      .then(data => {
-        const proiezioneId = data.proiezioneId;
-        if (!proiezioneId) return [];
-        return fetch(`get_posti_occupati.php?proiezione=${proiezioneId}`)
-          .then(res => res.json())
-          .then(posti => {
-            console.log('🎟️ Posti occupati:', posti);
-            return posti;
-          });
+    const filmParams = urlParams.getAll('film');
+    const filmId = filmParams.length ? filmParams[filmParams.length - 1] : null;
+    const date = urlParams.get('date');
+    const ora = bookingState.selectedTime
+      ? bookingState.selectedTime + ':00'
+      : urlParams.get('orario');
+    if (!filmId || !date || !ora) return Promise.resolve([]);
+    return fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
+      .then(r => r.json())
+      .then(d => {
+        if (!d.proiezioneId) return [];
+        return fetch(`get_posti_occupati.php?proiezione=${d.proiezioneId}`)
+          .then(r => r.json());
       })
       .catch(err => {
-        console.error('Errore durante getOccupiedSeats:', err);
+        console.error(err);
         return [];
       });
   }
 
-
-
-  document.querySelector('.apply-promo').addEventListener('click', () => {
-    const promoCode = uiElements.promoInput.value.toUpperCase();
-    const discount = PROMO_CODES[promoCode] || 0;
-
-    if (discount > 0) {
-      bookingState.discountApplied = discount;
+  // promo
+  ui.applyPromo.addEventListener('click', () => {
+    const code = ui.promoInput.value.toUpperCase();
+    const disc = PROMO_CODES[code] || 0;
+    if (disc > 0) {
+      bookingState.discountApplied = disc;
       updateCart();
-      showCustomAlert('success', `Sconto ${discount}% applicato!`);
+      showCustomAlert('success', `Sconto ${disc}% applicato!`);
       animateElements('.promo-section', 'heartBeat');
     } else {
       showCustomAlert('error', 'Codice promozionale non valido');
     }
   });
 
-  document.querySelector('.checkout-button').addEventListener('click', () => {
+  // checkout
+  ui.checkoutBtn.addEventListener('click', () => {
     if (!bookingState.selectedTime || bookingState.selectedSeats.length === 0) {
       showCustomAlert('warning', 'Completa tutti i passaggi!', 'Seleziona orario e posti');
       return;
     }
-
     const filmTitle = document.querySelector('.movie-title span')?.textContent.trim() || '';
-    const confirmMessage = `📽️ Film: ${filmTitle}<br>⏰ Orario: ${bookingState.selectedTime}<br>💺 Posti: ${bookingState.selectedSeats.map(s => s.number).join(', ')}<br>💰 Totale: €${(bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)}`;
+    const conferma = `📽️ Film: ${filmTitle}<br>⏰ Orario: ${bookingState.selectedTime}` +
+      `<br>💺 Posti: ${bookingState.selectedSeats.map(s => s.number).join(', ')}` +
+      `<br>💰 Totale: €${(bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)}`;
 
     Swal.fire({
       title: 'Confermare la prenotazione?',
-      html: confirmMessage,
+      html: conferma,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Conferma',
       cancelButtonText: 'Annulla'
-    }).then(result => {
-      if (!result.isConfirmed) return;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const allFilmParams = urlParams.getAll('film');
-      const filmId = allFilmParams.length ? allFilmParams[allFilmParams.length - 1] : null;
+    }).then(res => {
+      if (!res.isConfirmed) return;
+      const filmParams = urlParams.getAll('film');
+      const filmId = filmParams[filmParams.length - 1];
       const date = urlParams.get('date');
-      let orario = bookingState.selectedTime || urlParams.get('orario');
-      if (orario && orario.length === 5) orario += ':00';
-
-      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${orario}`)
-        .then(res => res.json())
-        .then(data => {
-          const proiezioneId = data.proiezioneId;
-
-          const chiediMail = () => {
+      let ora = bookingState.selectedTime;
+      if (ora.length === 5) ora += ':00';
+      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
+        .then(r => r.json())
+        .then(d => {
+          const pid = d.proiezioneId;
+          const askMail = () => {
             Swal.fire({
               title: 'Inserisci la tua email',
               input: 'email',
-              inputLabel: 'Riceverai il riepilogo della prenotazione',
+              inputLabel: 'Riceverai il riepilogo',
               inputPlaceholder: 'email@example.com',
               showCancelButton: true,
               confirmButtonText: 'Invia'
             }).then(input => {
               if (input.isConfirmed && input.value) {
-                salvaBigliettiEInvia(input.value, filmTitle, proiezioneId);
+                salvaBigliettiEInvia(input.value, filmTitle, pid);
               }
             });
           };
-
           if (typeof userMail !== 'undefined' && userMail) {
-            salvaBigliettiEInvia(userMail, filmTitle, proiezioneId);
+            salvaBigliettiEInvia(userMail, filmTitle, pid);
           } else {
-            chiediMail();
+            askMail();
           }
         })
         .catch(err => {
+          console.error(err);
           showCustomAlert('error', 'Errore di rete o server');
-          console.error('FETCH FAILED:', err);
         });
     });
   });
+
+  function resetCart() {
+  bookingState.selectedSeats   = [];
+  bookingState.totalPrice      = 0;
+  bookingState.discountApplied = 0;
+  document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+  updateCart();
+}
 
   function salvaBigliettiEInvia(email, filmTitle, proiezioneId) {
     fetch('salva_biglietti.php', {
@@ -316,17 +321,17 @@ document.addEventListener('DOMContentLoaded', function () {
         mail: email
       })
     })
-      .then(res => res.json())
-      .then(response => {
-        if (response.status === 'ok') {
+      .then(r => r.json())
+      .then(resp => {
+        if (resp.status === 'ok') {
           inviaMail(email, filmTitle);
         } else {
           showCustomAlert('error', 'Errore durante il salvataggio dei biglietti');
         }
       })
       .catch(err => {
+        console.error(err);
         showCustomAlert('error', 'Errore di rete o server');
-        console.error('FETCH FAILED:', err);
       });
   }
 
@@ -338,12 +343,12 @@ document.addEventListener('DOMContentLoaded', function () {
       posti: bookingState.selectedSeats.map(s => s.number).join(', '),
       totale: (bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)
     };
-
     fetch('send_ticket_email.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    }).then(res => res.json())
+    })
+      .then(r => r.json())
       .then(data => {
         if (data.status === 'ok') {
           Swal.fire({
@@ -364,22 +369,18 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
+  // helpers
   function animateElements(selector, animation) {
     document.querySelectorAll(selector).forEach(el => {
       el.style.animation = `${animation} 0.5s ease-out`;
       el.addEventListener('animationend', () => el.style.animation = '');
     });
   }
-
   function showCustomAlert(icon, title, text = '') {
     Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
   }
 
-  function updateSteps(step) {
-    uiElements.steps.forEach((el, idx) => {
-      el.classList.toggle('active', idx <= step);
-      el.classList.toggle('completed', idx < step);
-    });
-  }
+  // on load, if sala già in URL → carica i posti
   caricaSalaEGeneraPosti();
+
 });

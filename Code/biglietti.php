@@ -72,14 +72,14 @@ $conn = null;
   <link rel="stylesheet" href="biglietti.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     const userMail = <?= isset($_SESSION['mail']) ? json_encode($_SESSION['mail']) : 'null' ?>;
   </script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="biglietti.js"></script>
   <script src="js/nav.js"></script>
 </head>
@@ -186,7 +186,10 @@ $conn = null;
     </div>
 
   </div>
-  <?php include 'footer.html'; ?>
+  <?php
+    include 'footer.html';
+    ?>
+    <script src="footer.js"></script>
 </body>
 
 </html>
