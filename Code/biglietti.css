@@ -237,7 +237,7 @@
     margin-top: 25px;
     margin-bottom: 30px;
     border-radius: 15px;
-    background: var(--dark-color);
+    background: linear-gradient(90deg, #4b4b4b 0%, rgba(39, 39, 39, 1) 35%, rgba(0, 0, 0, 1) 65%, #4b4b4b 100%);
     border-radius: 8px;
     box-shadow: 0 0 25px rgba(0, 195, 255, 0.2);
     position: relative;
@@ -260,7 +260,7 @@
     grid-template-columns: repeat(var(--cols), 1fr);
     gap: 10px;
     margin: 30px auto;
-    max-width:  calc(var(--cols) * 40px + 70px);
+    max-width: calc(var(--cols) * 45px + 70px);
     box-shadow:
         inset 0 0 15px rgba(0, 0, 0, 0.2),
         0 0 30px rgba(0, 195, 255, 0.1);
@@ -270,11 +270,13 @@
 }
 
 .seat {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     background-color: var(--primary-color);
     border-radius: 10px;
-    color: transparent;
+    color: white;
+    font-size: small;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -283,23 +285,27 @@
     margin-bottom: 20px;
 }
 
+
 .seat.available:not(.selected):hover {
     background: #d64d4d;
     transform: scale(1.1);
 }
 
-.seat.selected, .seat.vip.selected {
+.seat.selected,
+.seat.vip.selected {
     background: #0077ff;
     transform: scale(1.1);
 }
 
-.seat.occupied, .seat.vip.occupied {
+.seat.occupied,
+.seat.vip.occupied {
     background: #000000;
     cursor: not-allowed;
 }
 
 .seat.vip {
     background-color: #ffae35;
+    color: var(--dark-color);
 }
 
 /* Seat Legend */
@@ -309,7 +315,7 @@
     justify-content: center;
     margin: 30px 18rem;
     padding: 20px;
-    background: #910000;
+    background: var(--primary-color-lighter);
     border-radius: 15px;
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
