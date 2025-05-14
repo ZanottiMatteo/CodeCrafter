@@ -2,8 +2,8 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
+  header('Location: login.php');
+  exit;
 }
 
 $nomeUtente = $_SESSION['nome'];
@@ -24,7 +24,9 @@ include 'connect.php';
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="utente.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="js/nav.js"></script>
+  <script src="utente.js"></script>
 </head>
 
 <body>
@@ -79,6 +81,7 @@ include 'connect.php';
                   <th>Data Acquisto</th>
                   <th>Prezzo</th>
                   <th>Email</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>";
@@ -97,6 +100,16 @@ include 'connect.php';
           <td>{$dataFormattata}</td>
           <td>{$prezzoFormattato}</td>
           <td>{$b['email']}</td>
+          <td>
+            <form method='POST' action='elimina_biglietto.php' class='delete-form'>
+              <input type='hidden' name='numProiezione' value='{$b['numProiezione']}'>
+              <input type='hidden' name='numFila' value='{$b['numFila']}'>
+              <input type='hidden' name='numPosto' value='{$b['numPosto']}'>
+              <button type='submit' class='btn-icon' title='Elimina biglietto'>
+                <img src='https://cdn-icons-png.flaticon.com/128/3976/3976961.png' alt='Elimina'>
+              </button>
+            </form>
+          </td>
         </tr>";
         }
 
@@ -109,6 +122,18 @@ include 'connect.php';
   </main>
 
   <?php include 'footer.html'; ?>
+  <?php if (isset($_GET['deleted'])): ?>
+    <script>
+      localStorage.setItem('showDeleteAlert', '1');
+      if (history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('deleted');
+        history.replaceState(null, '', url);
+      }
+    </script>
+  <?php endif; ?>
+
 </body>
+
 
 </html>

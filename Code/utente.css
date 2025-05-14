@@ -1,16 +1,17 @@
 /* User Card */
 .user-card {
   max-width: 900px;
-  margin: 7rem auto 3rem;       /* centrato e distanziato dalla tabella */
+  margin: 7rem auto 3rem;
+  /* centrato e distanziato dalla tabella */
   background-color: #fff;
   border-radius: 15px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  width: 100%;  
+  width: 100%;
 }
 
 .user-card h1 {
@@ -27,6 +28,7 @@
   overflow: hidden;
   border: 3px solid #580000;
 }
+
 .user-card .avatar img {
   width: 100%;
   height: 100%;
@@ -38,67 +40,63 @@
   font-size: 1.2rem;
   color: #333;
 }
+
 .user-card .user-info p strong {
   color: #580000;
 }
 
-/* Box bianco che contiene tutta la lista */
 .ticket-list {
   color: black;
-  margin: 2rem auto 3rem;          /* margin-top: 7rem, centrato orizzontalmente */
-  max-width: 1600px;            /* larghezza massima del box */
-  background-color: #fff;       /* sfondo bianco */
-  border-radius: 15px;          /* angoli arrotondati */
-  padding: 2rem;                /* padding interno */
-  overflow-x: auto;             /* scroll orizzontale se serve */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin: 2rem auto 3rem;
+  max-width: 1600px;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 2rem;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Tabella centrata e limitata a 1200px */
 .ticket-list table {
   width: 100%;
-  max-width: 1200px;            /* larghezza massima della tabella */
-  margin: 0 auto 1rem;          /* centrata, con margin-bottom */
+  max-width: 1200px;
+  margin: 0 auto 1rem;
   border-collapse: collapse;
 }
 
-.ticket-list h1{
+.ticket-list h1 {
   text-align: center;
   color: var(--primary-color);
   margin-bottom: 2rem;
 }
 
-/* Header tabela */
 .ticket-list thead {
   background-color: #580000;
   color: #fff;
 }
 
-/* Celle della tabella */
 .ticket-list th,
 .ticket-list td {
   padding: 0.75rem 1rem;
   text-align: left;
   border: 1px solid #ddd;
- 
+
 }
 
 .ticket-list td {
- color: var(--dark-color);
+  color: var(--dark-color);
 }
 
-/* Righe alternate */
 .ticket-list tbody tr:nth-child(even) {
   background-color: #fafafa;
 }
 
-/* Hover sulle righe */
 .ticket-list tbody tr:hover {
   background-color: #f1f1f1;
 }
 
 /* Responsive: trasformazione in card su schermi stretti */
 @media (max-width: 600px) {
+
   .ticket-list table,
   .ticket-list thead,
   .ticket-list tbody,
@@ -107,19 +105,23 @@
   .ticket-list tr {
     display: block;
   }
+
   .ticket-list thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
   }
+
   .ticket-list tr {
     margin-bottom: 1rem;
   }
+
   .ticket-list td {
     position: relative;
     padding-left: 50%;
     text-align: right;
   }
+
   .ticket-list td::before {
     position: absolute;
     top: 0;
@@ -130,4 +132,23 @@
     content: attr(data-label);
     text-align: left;
   }
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-icon img {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+  display: block;
+  margin: auto;
+}
+
+.btn-icon:hover img {
+  transform: scale(1.2);
 }
