@@ -1,6 +1,14 @@
 <?php
 session_start();
 
+if (isset($_GET['film'])) {
+  $filmAttuale = intval($_GET['film']);
+  if (!isset($_SESSION['film']) || $_SESSION['film'] !== $filmAttuale) {
+    unset($_SESSION['orario'], $_SESSION['sala'], $_SESSION['booking_state']);
+    $_SESSION['film'] = $filmAttuale;
+  }
+}
+
 $filmId = isset($_GET['film']) ? intval($_GET['film']) : ($_SESSION['film'] ?? 0);
 $dateParam = isset($_GET['date']) ? $_GET['date'] : ($_SESSION['date'] ?? '');
 $timeParam = isset($_GET['orario']) ? substr($_GET['orario'], 0, 5) : ($_SESSION['orario'] ?? '');
@@ -187,9 +195,9 @@ $conn = null;
 
   </div>
   <?php
-    include 'footer.html';
-    ?>
-    <script src="footer.js"></script>
+  include 'footer.html';
+  ?>
+  <script src="footer.js"></script>
 </body>
 
 </html>

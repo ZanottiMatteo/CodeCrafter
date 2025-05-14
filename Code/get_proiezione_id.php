@@ -5,6 +5,20 @@ $film = $_GET['film'] ?? '';
 $data = $_GET['data'] ?? '';
 $ora = $_GET['ora'] ?? '';
 
+if ($ora) {
+  $parts = explode(':', $ora);
+  if (count($parts) >= 2) {
+    $ora = sprintf(
+      '%02d:%02d:%02d',
+      intval($parts[0]),
+      intval($parts[1]),
+      isset($parts[2]) ? intval($parts[2]) : 0
+    );
+  } else {
+    $ora = '';
+  }
+}
+
 if (!$film || !$data || !$ora) {
   http_response_code(400);
   echo json_encode(['proiezioneId' => null, 'message' => 'Parametri mancanti']);

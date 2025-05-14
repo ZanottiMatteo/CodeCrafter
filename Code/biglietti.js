@@ -76,10 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // initial state: only section 1 visible
   updateSteps(1);
 
-  // select a time slot → fetch sala & go to step 2
   ui.timeSlots.forEach(slot => {
     slot.addEventListener('click', () => {
       resetCart();
@@ -90,12 +88,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const orario = fullTime.slice(0, 5);
       bookingState.selectedTime = orario;
 
-      // persist in URL & session
       const url = new URL(window.location.href);
       const filmParams = urlParams.getAll('film');
       const filmId = filmParams[filmParams.length - 1];
       const date = urlParams.get('date');
-      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${orario}:00`)
+      const oraCompleta = orario.includes(':00') ? orario : `${orario}:00`;
+      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${oraCompleta}`)
         .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
         .then(data => {
           if (!data?.sala) {
@@ -157,9 +155,6 @@ document.addEventListener('DOMContentLoaded', function () {
       animateElements('.seat', 'bounceIn');
     });
   }
-
-
-
 
   function caricaSalaEGeneraPosti() {
     const salaId = urlParams.get('sala');
@@ -270,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const filmId = filmParams[filmParams.length - 1];
       const date = urlParams.get('date');
       let ora = bookingState.selectedTime;
-      if (ora.length === 5) ora += ':00';
+      if (ora && !ora.includes(':00')) ora += ':00';
       fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
         .then(r => r.json())
         .then(d => {
@@ -303,12 +298,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function resetCart() {
-  bookingState.selectedSeats   = [];
-  bookingState.totalPrice      = 0;
-  bookingState.discountApplied = 0;
-  document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
-  updateCart();
-}
+    bookingState.selectedSeats = [];
+    bookingState.totalPrice = 0;
+    bookingState.discountApplied = 0;
+    document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+    updateCart();
+  }
 
   function salvaBigliettiEInvia(email, filmTitle, proiezioneId) {
     fetch('salva_biglietti.php', {
@@ -380,7 +375,24 @@ document.addEventListener('DOMContentLoaded', function () {
     Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
   }
 
-  // on load, if sala già in URL → carica i posti
   caricaSalaEGeneraPosti();
+  const orarioInUrl = urlParams.get('orario');
+  const salaInUrl = urlParams.get('sala');
+  const date = urlParams.get('date');
+  const filmParams = urlParams.getAll('film');
+  const filmId = filmParams[filmParams.length - 1];
 
+  if (orarioInUrl && salaInUrl && filmId && date) {
+    ui.timeSlots.forEach(slot => {
+      if (slot.getAttribute('data-time')?.startsWith(orarioInUrl)) {
+        slot.classList.add('selected');
+      }
+    });
+
+    bookingState.selectedTime = orarioInUrl;
+
+    document.getElementById('sala').textContent = salaInUrl;
+    generateSeatsFromSala(salaInUrl);
+    updateSteps(2);
+  }
 });

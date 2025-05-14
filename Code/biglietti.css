@@ -301,6 +301,7 @@
 .seat.vip.occupied {
     background: #000000;
     cursor: not-allowed;
+    color: white;
 }
 
 .seat.vip {
