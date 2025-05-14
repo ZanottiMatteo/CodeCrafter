@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function generateSeats(numRighe, numColonne) {
     getOccupiedSeats().then(occupiedSeats => {
       console.log(occupiedSeats)
+      uiElements.seatsGrid.style.setProperty('--cols', numRighe);
       uiElements.seatsGrid.innerHTML = '';
 
       for (let riga = 0; riga < numRighe; riga++) {
