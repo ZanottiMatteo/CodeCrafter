@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const signBtn = document.getElementById('signBtn');
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
+    const forgotForm = document.getElementById('forgotForm');
     const switchToSignup = document.getElementById('switchToSignup');
     const switchToLogin = document.getElementById('switchToLogin');
-    const authContainer = document.querySelector('.auth-container');
+    const forgotLink = document.getElementById('forgotPasswordLink');
 
     function showLogin() {
         logBtn.classList.add('active');
@@ -116,6 +117,37 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = "index.php";
         } else {
             showCustomAlert('error', "Errore nel login: Password e/o Mail errata!");
+        }
+    });
+
+    forgotLink?.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const { value: email } = await Swal.fire({
+            title: 'Recupero Password',
+            input: 'email',
+            inputLabel: 'Inserisci la tua email per ricevere la password',
+            inputPlaceholder: 'email@example.com',
+            confirmButtonText: 'Invia',
+            cancelButtonText: 'Annulla',
+            showCancelButton: true,
+            heightAuto: false
+        });
+
+        if (!email) return;
+
+        try {
+            const res = await fetch('recover_password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim() })
+            });
+
+            const result = await res.json();
+            showCustomAlert(result.icon, result.title, result.message);
+        } catch (err) {
+            console.error('Errore durante il recupero password:', err);
+            showCustomAlert('error', 'Errore', 'Errore durante la richiesta');
         }
     });
 

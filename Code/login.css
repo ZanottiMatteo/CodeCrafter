@@ -18,12 +18,13 @@
 body {
     background: var(--bg);
     color: var(--text);
+    min-height: 100vh;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    overflow-y: auto;
     position: relative;
-    overflow: hidden;
 }
 
 /* Animated background particles */
@@ -86,6 +87,10 @@ body::before {
     opacity: 1;
     transition: all 0.5s ease;
     animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    z-index: 1;
+    margin: 3vh auto;
+    max-height: 95vh;
 }
 
 @keyframes fadeInUp {
