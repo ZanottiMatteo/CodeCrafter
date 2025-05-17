@@ -2,7 +2,6 @@
 .user-card {
   max-width: 900px;
   margin: 7rem auto 3rem;
-  /* centrato e distanziato dalla tabella */
   background-color: #fff;
   border-radius: 15px;
   padding: 1.5rem;
@@ -92,46 +91,6 @@
 
 .ticket-list tbody tr:hover {
   background-color: #f1f1f1;
-}
-
-/* Responsive: trasformazione in card su schermi stretti */
-@media (max-width: 600px) {
-
-  .ticket-list table,
-  .ticket-list thead,
-  .ticket-list tbody,
-  .ticket-list th,
-  .ticket-list td,
-  .ticket-list tr {
-    display: block;
-  }
-
-  .ticket-list thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-
-  .ticket-list tr {
-    margin-bottom: 1rem;
-  }
-
-  .ticket-list td {
-    position: relative;
-    padding-left: 50%;
-    text-align: right;
-  }
-
-  .ticket-list td::before {
-    position: absolute;
-    top: 0;
-    left: 1rem;
-    width: 45%;
-    white-space: nowrap;
-    font-weight: bold;
-    content: attr(data-label);
-    text-align: left;
-  }
 }
 
 .btn-icon {

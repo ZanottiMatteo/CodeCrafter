@@ -36,7 +36,7 @@ include 'connect.php';
   include 'nav.html';
   ?>
 
-  <main class="content">
+  <main class="right-content">
     <div class="user-card">
       <h1>Informazioni profilo</h1>
       <div class="avatar">

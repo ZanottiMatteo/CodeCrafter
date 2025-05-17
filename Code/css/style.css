@@ -25,6 +25,11 @@ body {
   padding-left: 0px;
 }
 
+.right-content {
+  margin-left: 60px;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .right-container {
   margin-top: 6rem;
   margin-left: 150px;
@@ -472,6 +477,7 @@ nav ul li.active {
   cursor: pointer;
   transition: all 0.3s ease;
   height: 42px;
+  white-space: nowrap;
 }
 
 .logout-btn::after {
