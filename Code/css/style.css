@@ -79,6 +79,9 @@ body {
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: 88px;
+  font-size: 1rem;
 }
 
 .btn-login {
@@ -117,6 +120,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   z-index: 1001;
+  padding-bottom: 14px;
 }
 
 #sidebar.expanded {
@@ -454,25 +458,6 @@ nav ul li.active {
 
 .newsletter button:hover::before {
   left: 100%;
-}
-
-@media (max-width: 768px) {
-  #sidebar {
-    transition: transform 0.4s ease;
-  }
-
-  #sidebar:not(.expanded) {
-    transform: translateX(-100%);
-  }
-
-  #sidebar.expanded {
-    transform: translateX(0);
-    width: 250px;
-  }
-
-  nav ul li:hover {
-    transform: none !important;
-  }
 }
 
 .logout-btn {

@@ -1,4 +1,8 @@
-/* Search Section */
+.right-content {
+  margin-left: 60px;
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .search-section {
   background-color: white;
   border: 5px solid var(--primary-color);
@@ -22,15 +26,14 @@
   justify-content: center;
 }
 
-
 .form-group {
   display: flex;
   flex-direction: column;
   color: var(--primary-color);
   flex: 1 1 180px;
   min-width: 150px;
+  position: relative;
 }
-
 
 .form-group label {
   margin-bottom: 0.5rem;
@@ -78,12 +81,18 @@
   overflow-y: auto;
   position: absolute;
   background-color: rgb(255, 255, 255);
-  width: 18%;
+  min-width: unset;       
+  max-width: unset;        
+  width: 100%; 
   z-index: 10;
   display: none;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   top: 89px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
 }
 
 .film-suggestions::-webkit-scrollbar {
@@ -131,6 +140,7 @@
   object-fit: cover;
   border-radius: 4px;
   flex-shrink: 0;
+  display: block;
 }
 
 body.no-scroll {
@@ -181,8 +191,6 @@ body.no-scroll {
   cursor: pointer;
 }
 
-
-/* Movie Grid */
 .now-showing h2 {
   margin: 2rem 0 1.5rem;
   color: var(--primary-color);
@@ -197,7 +205,10 @@ body.no-scroll {
   display: flex;
   align-items: center;
   overflow: visible;
-  max-width: 1280px;
+  max-width: 1400px;
+  width: 100%; 
+  padding-left: clamp(8px, 5vw, 60px);
+  padding-right: clamp(8px, 5vw, 60px);
 }
 
 .movie-carousel {
@@ -223,13 +234,15 @@ body.no-scroll {
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  z-index: 2;
+  z-index: 5;
   transition: color 0.3s;
   background: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 0.8;
 }
 
 .carousel-btn:hover {
@@ -238,11 +251,11 @@ body.no-scroll {
 }
 
 .carousel-btn.prev {
-  left: clamp(-60px, -5vw, -20px);
+  left: 0px;
 }
 
 .carousel-btn.next {
-  right: clamp(-60px, -5vw, -20px);
+  right: 0px;
 }
 
 .movie-card {
@@ -393,7 +406,6 @@ body.no-scroll {
   color: #5f0000;
 }
 
-/* Promotions */
 .promotions h2 {
   margin: 3rem 0 1.5rem;
   color: var(--primary-color);
@@ -447,19 +459,26 @@ body.no-scroll {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
 }
 
 .modal-content {
-  width: 90%;
-  max-width: 750px;
+  width: 100%;
+  max-width: min(700px, calc(100vw - 60px - 40px));
   max-height: 95vh;
+  min-width: 320px;
   display: flex;
   flex-direction: column;
   background: #fff;
   overflow: hidden;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  padding: 1.2rem 0.8rem 1.2rem 0.8rem;
+  overflow-x: hidden;
+  margin-left: 60px;
+  position: relative;
+  z-index: 10001;
 }
 
 #modalClose {
@@ -472,7 +491,6 @@ body.no-scroll {
   cursor: pointer;
 }
 
-/* Movie Detail Modal */
 .movie-detail {
   display: flex;
   flex-direction: column;
@@ -495,18 +513,20 @@ body.no-scroll {
 }
 
 .movie-poster-detail img {
-  height: 100%;
-  width: 60%;
+  height: auto;
+  width: clamp(160px, 60vw, 350px);
   object-fit: contain;
+  max-width: 90vw;
+  display: block;
+  margin: 0 auto;
 }
 
-/* Showtimes List */
 .showtimes-list {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
   padding: 0;
   margin: 1rem 0;
 }
@@ -519,10 +539,14 @@ body.no-scroll {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-width: 120px;
+  min-width: 80px;
+  flex: 1 1 120px;
+  max-width: 180px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  text-align: center;
 }
 
-/* Styling for the time and room spans */
 .showtime-hour {
   font-size: 1.1rem;
   font-weight: 600;
@@ -535,23 +559,6 @@ body.no-scroll {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-}
-
-/* Responsive tweaks for the modal */
-@media (max-width: 600px) {
-  .movie-poster-detail img {
-    max-width: 200px;
-  }
-
-  .showtimes-list {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .showtimes-list li {
-    width: 100%;
-    max-width: 250px;
-  }
 }
 
 .movie-detail .movie-meta {
@@ -571,23 +578,30 @@ body.no-scroll {
 
 .movie-detail .showtimes-list {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  gap: 0.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
   list-style: none;
-  overflow-x: hidden;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  margin: 1rem 0;
 }
 
 .movie-detail .showtimes-list li {
-  flex: 0 0 calc(25% - 0.5rem);
+  flex: 1 1 120px; 
+  min-width: 110px;
+  max-width: 200px;
   box-sizing: border-box;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0.5rem 1rem;
   font-size: 0.95rem;
-
+  margin-bottom: 4px;
+  text-align: center;
 }
 
 .sala-tooltip {
@@ -599,36 +613,13 @@ body.no-scroll {
   padding: 0.75rem 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   pointer-events: none;
-  z-index: 2000;
+  z-index: 11000;
   font-size: 0.9rem;
   line-height: 1.2;
 }
 
-@keyframes gradientPulse {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 100% 50%;
-  }
-}
-
 .search-section {
-  animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transform-origin: top;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .movie-card {
@@ -667,25 +658,6 @@ body.no-scroll {
   animation: shine 3s infinite;
 }
 
-@keyframes shine {
-  0% {
-    left: -100%;
-  }
-
-  20% {
-    left: 100%;
-  }
-
-  100% {
-    left: 100%;
-  }
-}
-
-.carousel-btn {
-  transition: all 0.3s ease;
-  opacity: 0.8;
-}
-
 .carousel-btn:hover {
   opacity: 1;
   transform: translateY(-50%) scale(1.2);
@@ -703,18 +675,6 @@ body.no-scroll {
 
 .modal-content {
   animation: modalEnter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes modalEnter {
-  from {
-    transform: scale(0.8) translateY(50px);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
 }
 
 .showtimes-list li {
@@ -737,16 +697,6 @@ body.no-scroll {
   color: rgba(255, 255, 255, 0.8);
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -468px 0
-  }
-
-  100% {
-    background-position: 468px 0
-  }
-}
-
 .loading-card {
   animation-duration: 1.5s;
   animation-fill-mode: forwards;
@@ -757,20 +707,6 @@ body.no-scroll {
   background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
   background-size: 800px 104px;
   position: relative;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
 }
 
 .featured-movie {
@@ -796,52 +732,8 @@ body.no-scroll {
   width: 100%;
 }
 
-@keyframes scrollIndicator {
-  0% {
-    opacity: 0.5;
-    transform: translateY(-10px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .scroll-indicator {
   animation: scrollIndicator 1.5s infinite alternate;
-}
-
-@media (max-width: 768px) {
-  .movie-card:hover {
-    transform: none;
-  }
-
-  .carousel-btn {
-    font-size: 2.5rem;
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gradientPulse {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 100% 50%;
-  }
 }
 
 .btn-search {
@@ -870,4 +762,88 @@ body.no-scroll {
 .btn-search:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+@keyframes gradientPulse {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scrollIndicator {
+  0% {
+    opacity: 0.5;
+    transform: translateY(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0
+  }
+
+  100% {
+    background-position: 468px 0
+  }
+}
+
+@keyframes modalEnter {
+  from {
+    transform: scale(0.8) translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+
+  20% {
+    left: 100%;
+  }
+
+  100% {
+    left: 100%;
+  }
 }

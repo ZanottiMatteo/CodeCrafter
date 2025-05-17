@@ -48,7 +48,7 @@ if (isset($_SESSION['user_id'])) {
             </div>
             <div class="options">
                 <a href="#" id="forgotPasswordLink"><i class="fas fa-key"></i> Forgot password?</a>
-                <a href="#"><i class="fas fa-question-circle"></i> Need help?</a>
+                <a href="javascript:void(0)"><i class="fas fa-question-circle"></i> Need help?</a>
             </div>
             <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> LOGIN</button>
 

@@ -19,8 +19,8 @@ $nomeUtente = $_SESSION['nome'] ?? '';
           </form>
         </div>
       <?php else: ?>
-        <a href="login.php" class="btn-login"><i class="fas fa-user"></i> Log-in</a>
-        <a href="login.php#signup" class="btn-register">Sign-Up</a>
+        <a href="login.php" class="btn-login"><i class="fas fa-user"></i> Login</a>
+        <a href="login.php#signup" class="btn-register">SignUp</a>
       <?php endif; ?>
     </div>
   </div>

@@ -17,10 +17,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
-    
     <script src="index.js"></script>
     <script src="js/nav.js"></script>
-
 </head>
 
 <body>
