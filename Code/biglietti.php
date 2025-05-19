@@ -174,7 +174,9 @@ $conn = null;
               <div class="seat-sample vip"></div><span>VIP</span>
             </div>
           </div>
-          <div class="seats-grid"></div>
+          <div class="seats-grid-wrapper">
+            <div class="seats-grid"></div>
+          </div>
         </div>
       </div>
 

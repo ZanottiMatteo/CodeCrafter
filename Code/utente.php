@@ -49,7 +49,7 @@ include 'connect.php';
     </div>
 
     <div class="ticket-list">
-      <h1>Tutti i biglietti prenotati</h1>
+      <h1 class="ticket-title">Tutti i biglietti prenotati</h1>
       <?php
       require 'connect.php';
       setlocale(LC_TIME, 'it_IT.UTF-8');

@@ -1,25 +1,9 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin: 0 auto;
-    align-items: center;
-}
-
 .row-top {
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    gap: 10rem;
-    margin-top: 6rem;
-}
-
-.movie-selection {
-    flex: 1 1 300px;
-}
-
-.datetime-picker {
-    flex: 2 1 500px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4rem;
+    margin-top: 8rem;
 }
 
 .row-middle {
@@ -41,7 +25,11 @@
     top: 6rem;
     border-radius: 20px;
     z-index: 999;
-    animation: searchFadeIn 0.9s ease-out both;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
+    flex-wrap: wrap;
 }
 
 /* Grid seats*/
@@ -61,8 +49,11 @@
 .booking-steps {
     color: white;
     display: flex;
-    justify-content: space-between;
-    gap: 50px;
+    flex-wrap: wrap;           
+    justify-content: center; 
+    gap: 1.2rem;           
+    width: 100%;
+    align-items: flex-start;
 }
 
 .step {
@@ -74,6 +65,10 @@
     border-radius: 5px;
     font-weight: bold;
     transition: all 0.3s ease;
+    flex: 1 1 180px;
+    min-width: 120px;
+    max-width: 240px;
+    text-align: center;
 }
 
 .step.active {
@@ -85,21 +80,29 @@
 /* Movie Selection */
 .movie-card {
     border-radius: 12px;
-    width: 500px;
-    height: 700px;
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    aspect-ratio: 5 / 7;
     overflow: hidden;
-    transition: transform 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transform-style: preserve-3d;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: movieSlideIn 0.8s ease-out both;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .movie-card img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     border-radius: 12px;
+    display: block;
 }
+
 
 .select-movie {
     width: 100%;
@@ -114,12 +117,10 @@
 /* Datetime Picker */
 .datetime-picker {
     max-width: 600px;
-    max-height: 700px;
     padding: 1rem 3rem;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     align-items: center;
-    animation: fadeInUp 0.8s ease-out;
 }
 
 .datetime-picker h3 {
@@ -160,6 +161,9 @@
 }
 
 .form-group {
+    flex: 1 1 180px;  
+    min-width: 120px;   
+    max-width: 350px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -255,6 +259,14 @@
     opacity: 0.3;
 }
 
+.seats-grid-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 2px;
+    box-sizing: border-box;
+}
+
 .seats-grid {
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
@@ -267,6 +279,23 @@
     padding: 20px;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 15px;
+    margin-bottom: 0;
+}
+
+.seats-grid-wrapper::-webkit-scrollbar {
+  height: 12px;
+  background: #e0dede;
+  border-radius: 8px;
+}
+
+.seats-grid-wrapper::-webkit-scrollbar-thumb {
+  background: #5f0000;
+  border-radius: 8px;
+  border: 1px solid #fff;
+}
+
+.seats-grid-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #8b2424;
 }
 
 .seat {
@@ -313,8 +342,9 @@
 .seat-legend {
     display: flex;
     gap: 25px;
+    width: 60%;
     justify-content: center;
-    margin: 30px 18rem;
+    margin: 2rem auto;
     padding: 20px;
     background: var(--primary-color-lighter);
     border-radius: 15px;
@@ -323,6 +353,9 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     z-index: 1;
+    min-width: 200px;   
+    flex-wrap: wrap;
+    box-sizing: border-box;
 }
 
 .legend-item {
@@ -335,6 +368,8 @@
     background: rgb(73, 73, 73);
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 150px;       
+    justify-content: center;  
 }
 
 
@@ -555,71 +590,6 @@
     }
 }
 
-
-/* Responsive */
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .left-bar {
-        width: 0;
-    }
-
-    .left-bar:hover {
-        width: 300px;
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-    .left-bar:hover~.main-content {
-        margin-left: 350px;
-    }
-
-    .movie-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .search-form {
-        grid-template-columns: 1fr;
-    }
-
-    .promo-cards {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .row-top {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .movie-selection,
-    .datetime-picker {
-        width: 100%;
-    }
-}
-
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
 @keyframes shimmer {
     0% {
         background-position: -800px 0;
@@ -627,19 +597,5 @@
 
     100% {
         background-position: 800px 0;
-    }
-}
-
-
-
-@keyframes movieSlideIn {
-    from {
-        transform: translateY(40px) scale(0.95);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0) scale(1);
-        opacity: 1;
     }
 }
