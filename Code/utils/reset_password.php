@@ -7,7 +7,6 @@ if (!$token) {
     die('Token mancante');
 }
 
-// Controlla se il token esiste ed è valido
 $stmt = $conn->prepare("SELECT id FROM Utente WHERE reset_token = :token AND reset_expire > NOW()");
 $stmt->execute(['token' => $token]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -42,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>CineCraft - Login / Signup</title>
     <link rel="icon" href="Icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="reset_password.css">
-    <link rel="stylesheet" href="nav_header_footer/style.css">
+    <link rel="stylesheet" href="../nav_header_footer/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
@@ -56,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($error))
             echo "<p style='color:red;'>$error</p>"; ?>
         <?php if (!empty($success)) {
-            echo "<p style='color:lime;'>$success</p><a href='login.php'>Torna al login</a>";
+            echo "<p style='color:lime;'>$success</p><a href='../login_logout/login.php'>Torna al login</a>";
         } else { ?>
             <form method="POST">
                 <input type="password" name="password" placeholder="Nuova password" required>

@@ -19,7 +19,7 @@ if (
   $filmId && $dateParam && $timeParam && $salaParam
 ) {
 
-  $redirectUrl = "biglietti.php?film=$filmId&date=$dateParam&orario=$timeParam&sala=$salaParam";
+  $redirectUrl = "../biglietti/biglietti.php?film=$filmId&date=$dateParam&orario=$timeParam&sala=$salaParam";
   header("Location: $redirectUrl");
   exit;
 }
@@ -37,7 +37,7 @@ if (isset($_GET['sala'])) {
   $_SESSION['sala'] = $salaParam;
 }
 
-include 'connect.php';
+include '../utils/connect.php';
 $stmt = $conn->prepare(
   "SELECT titolo, durata, lingua
      FROM Film
@@ -47,7 +47,7 @@ $stmt->bindValue(':id', $filmId, PDO::PARAM_INT);
 $stmt->execute();
 $filmData = $stmt->fetch(PDO::FETCH_ASSOC) ?: ['titolo' => '', 'durata' => '', 'lingua' => ''];
 
-$imgData = json_decode(file_get_contents('film_images.json'), true);
+$imgData = json_decode(file_get_contents('../utils/film_images.json'), true);
 $posterUrl = $imgData[$filmId] ?? 'default.jpg';
 
 $times = [];
@@ -75,10 +75,10 @@ $conn = null;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#580000">
-  <title>CineCraft - Prenotazione Biglietti</title>
-  <link rel="icon" href="Icon.ico" type="image/x-icon">
+  <title>CodeCrafter - Prenotazione Biglietti</title>
+  <link rel="icon" href="../utils/Icon.ico" type="image/x-icon">
   <link rel="stylesheet" href="biglietti.css">
-  <link rel="stylesheet" href="nav_header_footer/style.css">
+  <link rel="stylesheet" href="../nav_header_footer/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -89,13 +89,13 @@ $conn = null;
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
   <script src="biglietti.js"></script>
-  <script src="js/nav.js"></script>
+  <script src="../nav_header_footer/nav.js"></script>
 </head>
 
 <body>
   <?php
-  include 'header.php';
-  include 'nav.html';
+  include '../nav_header_footer/header.php';
+  include '../nav_header_footer/nav.html';
   ?>
   <div class="right-content">
     <div class="container">
@@ -197,9 +197,9 @@ $conn = null;
 
   </div>
   <?php
-  include 'footer.html';
+  include '../nav_header_footer/footer.html';
   ?>
-  <script src="footer.js"></script>
+  <script src="../nav_header_footer/footer.js"></script>
 </body>
 
 </html>

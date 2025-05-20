@@ -3,7 +3,7 @@ session_start();
 require 'connect.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: login/login.php');
     exit;
 }
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':e' => $email
     ]);
 
-    header("Location: utente.php?deleted=1");
+    header("Location: ../utente/utente.php?deleted=1");
     exit;
 }
 ?>

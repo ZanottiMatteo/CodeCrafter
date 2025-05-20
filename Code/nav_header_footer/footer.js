@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const address = email.value.trim();
     if (!address) {
-      // Alert di errore email vuota/invalid
       Swal.fire({
         icon: 'error',
         title: 'Email non valida',
@@ -20,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    fetch('subscribe_newsletter.php', {
+    fetch('../utils/subscribe_newsletter.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: address })
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(res => res.json().then(body => ({ status: res.status, body })))
     .then(({ status, body }) => {
       if (status === 200 && body.status === 'ok') {
-        // Conferma di successo
         Swal.fire({
           icon: 'success',
           title: 'Iscrizione avvenuta con successo',
@@ -40,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         form.reset();
       } else if (status === 400 && body.status === 'invalid_email') {
-        // Alert email non valida dal server
         Swal.fire({
           icon: 'error',
           title: 'Email non valida',
@@ -51,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
           showConfirmButton: false
         });
       } else {
-        // Errore generico
         Swal.fire({
           icon: 'error',
           title: 'Errore',

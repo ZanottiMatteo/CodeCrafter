@@ -2,14 +2,14 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  header('Location: login.php');
+  header('Location: ../login_logout/login.php');
   exit;
 }
 
 $nomeUtente = $_SESSION['nome'];
 $mailUtente = $_SESSION['mail'];
 
-include 'connect.php';
+include '../utils/connect.php';
 ?>
 
 <!DOCTYPE html>
@@ -19,21 +19,21 @@ include 'connect.php';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#580000">
-  <title>CineCraft - I tuoi Biglietti</title>
-  <link rel="icon" href="Icon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="nav_header_footer/style.css">
+  <title>CodeCrafter - I tuoi Biglietti</title>
+  <link rel="icon" href="../utils/Icon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../nav_header_footer/style.css">
   <link rel="stylesheet" href="utente.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="js/nav.js"></script>
+  <script src="../nav_header_footer/nav.js"></script>
   <script src="utente.js"></script>
 </head>
 
 <body>
   <?php
-  include 'header.php';
-  include 'nav.html';
+  include '../nav_header_footer/header.php';
+  include '../nav_header_footer/nav.html';
   ?>
 
   <main class="right-content">
@@ -51,7 +51,7 @@ include 'connect.php';
     <div class="ticket-list">
       <h1 class="ticket-title">Tutti i biglietti prenotati</h1>
       <?php
-      require 'connect.php';
+      include '../utils/connect.php';
       setlocale(LC_TIME, 'it_IT.UTF-8');
       date_default_timezone_set('Europe/Rome');
 
@@ -102,7 +102,7 @@ include 'connect.php';
           <td>{$prezzoFormattato}</td>
           <td>{$b['email']}</td>
           <td>
-            <form method='POST' action='elimina_biglietto.php' class='delete-form'>
+            <form method='POST' action='../utils/elimina_biglietto.php' class='delete-form'>
               <input type='hidden' name='numProiezione' value='{$b['numProiezione']}'>
               <input type='hidden' name='numFila' value='{$b['numFila']}'>
               <input type='hidden' name='numPosto' value='{$b['numPosto']}'>
@@ -123,9 +123,9 @@ include 'connect.php';
   </main>
 
   <?php
-  include 'footer.html';
+  include '../nav_header_footer/footer.html';
   ?>
-  <script src="footer.js"></script>
+  <script src="../nav_header_footer/footer.js"></script>
   <?php if (isset($_GET['deleted'])): ?>
     <script>
       localStorage.setItem('showDeleteAlert', '1');

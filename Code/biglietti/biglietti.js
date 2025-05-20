@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
     maxStep: 1
   };
 
-  // UI elements
   const ui = {
     steps: document.querySelectorAll('.booking-steps .step'),
     timeSlots: document.querySelectorAll('.time-slot'),
@@ -39,20 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
     checkoutBtn: document.querySelector('.checkout-button')
   };
 
-  // Step navigation & reveal logic
   function updateSteps(targetStep) {
-    // advance maxStep if we're moving forward
     if (targetStep > bookingState.maxStep) {
       bookingState.maxStep = targetStep;
     }
     bookingState.currentStep = targetStep;
 
-    // show all sections up to maxStep
     [1, 2, 3].forEach(i => {
       ui.sections[i].style.display = (i <= bookingState.maxStep ? '' : 'none');
     });
 
-    // nav highlighting
     ui.steps.forEach((el, idx) => {
       const stepNum = idx + 1;
       el.classList.toggle('active', stepNum === targetStep);
@@ -60,12 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // nav-step click: go back only if clicking a previous step
   ui.steps.forEach((el, idx) => {
     el.addEventListener('click', () => {
       const clicked = idx + 1;
       if (clicked < bookingState.currentStep) {
-        // reset cart
         bookingState.selectedSeats = [];
         bookingState.totalPrice = 0;
         bookingState.discountApplied = 0;
@@ -93,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const filmId = filmParams[filmParams.length - 1];
       const date = urlParams.get('date');
       const oraCompleta = orario.includes(':00') ? orario : `${orario}:00`;
-      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${oraCompleta}`)
+      fetch(`../utils/get_proiezione_id.php?film=${filmId}&data=${date}&ora=${oraCompleta}`)
         .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
         .then(data => {
           if (!data?.sala) {
@@ -103,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const sala = data.sala;
           url.searchParams.set('orario', orario);
           url.searchParams.set('sala', sala);
-          fetch('salva_parametri.php', {
+          fetch('../utils/salva_parametri.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orario, sala })
@@ -119,9 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Carica dati sala + genera seats
   function generateSeatsFromSala(salaId) {
-    fetch(`get_sala_data.php?id=${salaId}`)
+    fetch(`../utils/get_sala_data.php?id=${salaId}`)
       .then(res => res.json())
       .then(data => {
         if (data.numFile && data.numPostiPerFila) {
@@ -142,9 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ui.seatsGrid.style.setProperty('--cols', numColonne);
       ui.seatsGrid.innerHTML = '';
 
-      // per ogni riga (A, B, C…)
       for (let riga = 0; riga < numRighe; riga++) {
-        // per ogni colonna (1, 2, 3…)
         for (let col = 0; col < numColonne; col++) {
           const seatNumber = `${String.fromCharCode(65 + riga)}${col + 1}`;
           const seatEl = createSeatElement(seatNumber, occupied, riga, numRighe);
@@ -188,11 +178,9 @@ document.addEventListener('DOMContentLoaded', function () {
       bookingState.selectedSeats = bookingState.selectedSeats.filter(s => s.number !== seatNumber);
       bookingState.totalPrice -= price;
     }
-    // selezionato almeno un biglietto → passo 3
     if (bookingState.selectedSeats.length > 0 && bookingState.currentStep < 3) {
       updateSteps(3);
     }
-    // se tolgo ultimo biglietto e sto al 3 → torno al 2
     if (bookingState.selectedSeats.length === 0 && bookingState.currentStep === 3) {
       updateSteps(2);
     }
@@ -214,11 +202,11 @@ document.addEventListener('DOMContentLoaded', function () {
       ? bookingState.selectedTime + ':00'
       : urlParams.get('orario');
     if (!filmId || !date || !ora) return Promise.resolve([]);
-    return fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
+    return fetch(`../utils/get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
       .then(r => r.json())
       .then(d => {
         if (!d.proiezioneId) return [];
-        return fetch(`get_posti_occupati.php?proiezione=${d.proiezioneId}`)
+        return fetch(`../utils/get_posti_occupati.php?proiezione=${d.proiezioneId}`)
           .then(r => r.json());
       })
       .catch(err => {
@@ -266,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const date = urlParams.get('date');
       let ora = bookingState.selectedTime;
       if (ora && !ora.includes(':00')) ora += ':00';
-      fetch(`get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
+      fetch(`../utils/get_proiezione_id.php?film=${filmId}&data=${date}&ora=${ora}`)
         .then(r => r.json())
         .then(d => {
           const pid = d.proiezioneId;
@@ -306,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function salvaBigliettiEInvia(email, filmTitle, proiezioneId) {
-    fetch('salva_biglietti.php', {
+    fetch('../utils/salva_biglietti.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -338,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
       posti: bookingState.selectedSeats.map(s => s.number).join(', '),
       totale: (bookingState.totalPrice * (1 - bookingState.discountApplied / 100)).toFixed(2)
     };
-    fetch('send_ticket_email.php', {
+    fetch('../utils/send_ticket_email.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -354,8 +342,8 @@ document.addEventListener('DOMContentLoaded', function () {
             showConfirmButton: false,
             willClose: () => {
               localStorage.removeItem('bigliettiAttivo');
-              navigator.sendBeacon('clear_session.php');
-              window.location.href = 'index.php';
+              navigator.sendBeacon('../utils/clear_session.php');
+              window.location.href = '../index/index.php';
             }
           });
         } else {

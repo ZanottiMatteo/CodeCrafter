@@ -64,10 +64,14 @@ document.addEventListener('click', e => {
     }
 });
 
+document.addEventListener('submit', e => {
+    leavingViaLink = true;
+});
+
 window.addEventListener('beforeunload', (e) => {
-    if (!leavingViaLink && window.location.pathname.includes("biglietti.php")) {
+    if (!leavingViaLink) {
         localStorage.removeItem('bigliettiAttivo');
-        navigator.sendBeacon('clear_session.php');
+        navigator.sendBeacon('../utils/clear_session.php');
     }
 });
 

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function aggiornaOpzioni(filmId) {
         if (!filmId) return;
 
-        fetch(`get_options_by_film.php?film_id=${filmId}`)
+        fetch(`../utils/get_options_by_film.php?film_id=${filmId}`)
             .then(res => res.json())
             .then(data => {
                 const formattedDates = data.date.map(d => {
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const [y, m, d] = sel.split('-');
         const formattedDate = `${d}/${m}/${y}`;
 
-        fetch(`get_options_by_film_and_date.php?film_id=${filmInput.dataset.id}&data=${formattedDate}`)
+        fetch(`../utils/get_options_by_film_and_date.php?film_id=${filmInput.dataset.id}&data=${formattedDate}`)
             .then(res => res.json())
             .then(data => {
                 orarioSelect.disabled = false;
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const [y, m, d] = selDate.split('-');
         const formattedDate = `${d}/${m}/${y}`;
 
-        fetch(`get_options_by_film_and_date_and_time.php?film_id=${filmInput.dataset.id}&data=${formattedDate}&ora=${selTime}`)
+        fetch(`../utils/get_options_by_film_and_date_and_time.php?film_id=${filmInput.dataset.id}&data=${formattedDate}&ora=${selTime}`)
             .then(res => res.json())
             .then(data => {
                 if (data.sale.length) {
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function mostraTuttiIFilm() {
-        fetch('search_film.php?term=')
+        fetch('../utils/search_film.php?term=')
             .then(res => res.json())
             .then(renderSuggestions)
             .catch(() => {
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!q) {
             mostraTuttiIFilm();
         } else {
-            fetch('search_film.php?term=' + encodeURIComponent(q))
+            fetch('../utils/search_film.php?term=' + encodeURIComponent(q))
                 .then(res => res.json())
                 .then(renderSuggestions)
                 .catch(() => {
@@ -182,6 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.querySelector('.search-form');
     form.addEventListener('submit', function (e) {
+        localStorage.setItem('bigliettiAttivo', 'true');
         const raw = dataSelect.value;
         if (raw) {
             const [year, month, day] = raw.split('-');
@@ -216,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const filmDate = btn.dataset.filmDate;
         if (!filmId || !filmDate) return;
 
-        fetch(`movie_details.php?film_id=${encodeURIComponent(filmId)}&film_date=${encodeURIComponent(filmDate)}`)
+        fetch(`../utils/movie_details.php?film_id=${encodeURIComponent(filmId)}&film_date=${encodeURIComponent(filmDate)}`)
             .then(res => {
                 if (!res.ok) throw new Error("Network error");
                 return res.text();

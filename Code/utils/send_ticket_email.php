@@ -11,9 +11,8 @@ if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-$subject = "🎫 Conferma Prenotazione - CineCraft";
+$subject = "🎫 Conferma Prenotazione - CodeCrafter";
 
-// Corpo del messaggio HTML
 $message = "
 <html>
 <head>
@@ -26,14 +25,14 @@ $message = "
   <p><strong>Orario:</strong> {$data['orario']}</p>
   <p><strong>Posti:</strong> {$data['posti']}</p>
   <p><strong>Totale:</strong> €{$data['totale']}</p>
-  <p style='margin-top:20px;'>Grazie per aver prenotato con <strong>CineCraft</strong>. Buona visione! 🍿</p>
+  <p style='margin-top:20px;'>Grazie per aver prenotato con <strong>CodeCrafter</strong>. Buona visione! 🍿</p>
 </body>
 </html>
 ";
 
 $headers = "MIME-Version: 1.0\r\n";
 $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-$headers .= "From: CineCraft <no-reply@cinecraft.it>\r\n";
+$headers .= "From: CodeCrafter <no-reply@codecrafter.it>\r\n";
 
 if (mail($email, $subject, $message, $headers)) {
     echo json_encode(['status' => 'ok']);

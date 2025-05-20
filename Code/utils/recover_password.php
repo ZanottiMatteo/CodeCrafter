@@ -27,9 +27,9 @@ if ($user) {
         'id' => $user['id']
     ]);
 
-    $resetLink = "https://rikuzz.altervista.org/reset_password.php?token=$token";
+    $resetLink = "https://rikuzz.altervista.org/utils/reset_password.php?token=$token";
 
-    $subject = "Recupero Password - CineCraft";
+    $subject = "Recupero Password - CodeCrafter";
     $message = "Ciao {$user['nome']},\n\nAbbiamo ricevuto una richiesta per reimpostare la tua password.\n\nPer procedere clicca sul link seguente (valido per 1 ora):\n$resetLink\n\nSe non hai richiesto nulla, puoi ignorare questa email.";
     $headers = "From: no-reply@cinecraft.it";
 

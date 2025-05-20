@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#580000">
     <title>CodeCrafter - Home</title>
-    <link rel="icon" href="Icon.ico" type="image/x-icon">
+    <link rel="icon" href="../utils/Icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="nav_header_footer/style.css">
+    <link rel="stylesheet" href="../nav_header_footer/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
@@ -18,18 +18,18 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
     <script src="index.js"></script>
-    <script src="js/nav.js"></script>
+    <script src="../nav_header_footer/nav.js"></script>
 </head>
 
 <body>
     <?php
-    include 'header.php';
-    include 'nav.html';
+    include '../nav_header_footer/header.php';
+    include '../nav_header_footer/nav.html';
     ?>
     <div class="right-content">
         <section id="filtro" class="search-section">
             <div class="container">
-                <form class="search-form" action="biglietti.php" method="get">
+                <form class="search-form" action="../biglietti/biglietti.php" method="get">
                     <div class="form-group">
                         <label for="film"><i class="fas fa-film"></i> Film:</label>
                         <input type="text" id="film" name="film" placeholder="Cerca un film..." list="film-list"
@@ -66,9 +66,9 @@
                     <button class="carousel-btn prev" aria-label="Precedente">‹</button>
                     <div class="movie-carousel">
                         <?php
-                        include 'connect.php';
+                        include '../utils/connect.php';
 
-                        $imgData = json_decode(file_get_contents('film_images.json'), true);
+                        $imgData = json_decode(file_get_contents('../utils/film_images.json'), true);
                         $startOfWeek = strtotime('monday this week');
                         $endOfWeek = strtotime('sunday this week');
                         $dates = [];
@@ -157,7 +157,7 @@
                                                         <i class="fas fa-info-circle"></i> Dettagli
                                                     </button>
                                                     <a 
-                                                        href="biglietti.php?film=' . urlencode($codice) . '&date=' . urlencode($date) . '" 
+                                                        href="../biglietti/biglietti.php?film=' . urlencode($codice) . '&date=' . urlencode($date) . '" 
                                                         class="btn-book">
                                                         <i class="fas fa-ticket-alt"></i> Prenota
                                                     </a>
@@ -171,7 +171,7 @@
                         }
                         $conn = null;
                         ?>
-                        <a href="film.php" class="movie-card load-more-card">
+                        <a href="../film/film.php" class="movie-card load-more-card">
                             <div class="more-content">
                                 <i class="fas fa-plus-circle"></i>
                                 <span>Altri film</span>
@@ -215,8 +215,8 @@
     </div>
 
     <?php
-    include 'footer.html';
+    include '../nav_header_footer/footer.html';
     ?>
-    <script src="footer.js"></script>
+    <script src="../nav_header_footer/footer.js"></script>
 </body>
 

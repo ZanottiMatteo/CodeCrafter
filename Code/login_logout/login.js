@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (password !== confirm) return showCustomAlert('error', "Le password non coincidono!");
 
-        const res = await fetch('auth_register.php', {
+        const res = await fetch('../utils/auth_register.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, mail, password })
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mail = inputs[0].value.trim();
         const password = inputs[1].value;
 
-        const res = await fetch('auth_login.php', {
+        const res = await fetch('../utils/auth_login.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ mail, password })
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (result.success) {
-            window.location.href = "index.php";
+            window.location.href = "../index/index.php";
         } else {
             showCustomAlert('error', "Errore nel login: Password e/o Mail errata!");
         }
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!email) return;
 
         try {
-            const res = await fetch('recover_password.php', {
+            const res = await fetch('../utils/recover_password.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email.trim() })

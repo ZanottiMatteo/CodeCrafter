@@ -5,21 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#580000">
-  <title>CineCraft - Prenotazione Biglietti</title>
-  <link rel="icon" href="Icon.ico" type="image/x-icon">
+  <title>CodeCrafter - Prenotazione Biglietti</title>
+  <link rel="icon" href="../utils/Icon.ico" type="image/x-icon">
   <link rel="stylesheet" href="film.css">
-  <link rel="stylesheet" href="nav_header_footer/style.css">
+  <link rel="stylesheet" href="../nav_header_footer/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="film.js"></script>
-  <script src="js/nav.js"></script>
+  <script src="../nav_header_footer/nav.js"></script>
 </head>
 
 <body>
   <?php
-  include 'header.php';
-  include 'nav.html';
+  include '../nav_header_footer/header.php';
+  include '../nav_header_footer/nav.html';
   ?>
   <div class="right-content">
     <section id="filtro" class="search-section">
@@ -42,9 +42,9 @@
     <div class="container">
       <div class="movies-grid">
         <?php
-        include 'connect.php';
+        include '../utils/connect.php';
 
-        $imgData = json_decode(file_get_contents('film_images.json'), true);
+        $imgData = json_decode(file_get_contents('../utils/film_images.json'), true);
         if (!empty($_GET['start-date']) && !empty($_GET['end-date'])) {
           $startTs = strtotime($_GET['start-date']);
           $endTs = strtotime($_GET['end-date']);
@@ -107,7 +107,7 @@
 
               echo '
               <article class="movie-card">
-                <a href="biglietti.php?film=' . $filmCodice . '&date=' . $urlDate . '" class="ticket-btn" title="Acquista biglietto">
+                <a href="../biglietti/biglietti.php?film=' . $filmCodice . '&date=' . $urlDate . '" class="ticket-btn" title="Acquista biglietto">
                   <img src="https://cdn-icons-png.flaticon.com/128/3702/3702886.png" alt="Ticket" class="ticket-icon">
                 </a>
 
@@ -132,9 +132,9 @@
     </div>
   </div>
   <?php
-    include 'footer.html';
+    include '../nav_header_footer/footer.html';
     ?>
-    <script src="footer.js"></script>
+    <script src="../nav_header_footer/footer.js"></script>
 </body>
 
 </html>
