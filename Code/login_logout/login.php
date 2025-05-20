@@ -15,7 +15,7 @@ if (isset($_SESSION['user_id'])) {
     <title>CineCraft - Login / Signup</title>
     <link rel="icon" href="Icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="login.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="nav_header_footer/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/flat-icons/css/flat-icons.min.css" rel="stylesheet" />
