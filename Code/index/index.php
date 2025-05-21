@@ -187,18 +187,18 @@
                 <div class="promo-cards">
                     <div class="promo-card">
                         <i class="fas fa-child"></i>
-                        <h3>Giovedì Bambini</h3>
-                        <p>Tutti i giovedì, biglietto a €5 per i bambini sotto i 12 anni</p>
+                        <h3>Fedeltà</h3>
+                        <p>Sconto del 10% se sei registrato al sito</p>
                     </div>
                     <div class="promo-card">
                         <i class="fas fa-user-friends"></i>
                         <h3>Gruppi</h3>
-                        <p>Sconto del 20% per gruppi di almeno 10 persone</p>
+                        <p>Sconto del 20% se acquisti almeno 10 biglietti</p>
                     </div>
                     <div class="promo-card">
-                        <i class="fas fa-birthday-cake"></i>
-                        <h3>Compleanno</h3>
-                        <p>Biglietto omaggio nel tuo compleanno!</p>
+                        <i class="fas fa-glass-martini"></i>
+                        <h3>Cibo e bevande</h3>
+                        <p>Sconto del 35% se acquisti almeno un menù al bar</p>
                     </div>
                 </div>
             </section>

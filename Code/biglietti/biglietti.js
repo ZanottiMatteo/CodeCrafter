@@ -188,11 +188,55 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateCart() {
+    if (bookingState.selectedSeats.length === 0) {
+      bookingState.discountApplied = 0;
+      if (ui.promoInput.value !== '') ui.promoInput.value = '';
+      ui.promoInput.disabled = false;
+      ui.applyPromo.disabled = false;
+    } else if (bookingState.selectedSeats.length >= 10) {
+      if (ui.promoInput.value !== 'CINEMA20') {
+        ui.promoInput.value = 'CINEMA20';
+        showCustomAlert('success', 'Sconto 20% per 10 o più biglietti!');
+        animateElements('.promo-section', 'heartBeat');
+      }
+      ui.promoInput.disabled = true;
+      ui.applyPromo.disabled = true;
+      bookingState.discountApplied = PROMO_CODES['CINEMA20'];
+    } else {
+      const code = ui.promoInput.value.toUpperCase();
+      const manualDiscount = PROMO_CODES[code] || 0;
+      if (
+        manualDiscount > 0 &&
+        code !== 'CINEMA20' &&
+        code !== 'LOGIN10'
+      ) {
+        bookingState.discountApplied = manualDiscount;
+        ui.promoInput.disabled = false;
+        ui.applyPromo.disabled = false;
+      } else if (typeof userMail !== 'undefined' && userMail) {
+        if (ui.promoInput.value !== 'LOGIN10') {
+          ui.promoInput.value = 'LOGIN10';
+          showCustomAlert('success', 'Sconto 10% per utenti registrati!');
+          animateElements('.promo-section', 'heartBeat');
+        }
+        ui.promoInput.disabled = true;
+        ui.applyPromo.disabled = true;
+        bookingState.discountApplied = 10;
+      } else {
+        bookingState.discountApplied = 0;
+        if (ui.promoInput.value !== '') ui.promoInput.value = '';
+        ui.promoInput.disabled = false;
+        ui.applyPromo.disabled = false;
+      }
+    }
+
     ui.seatsList.innerHTML = bookingState.selectedSeats
       .map(s => `<li>Posto ${s.number} (€${s.price})</li>`).join('');
     const discounted = bookingState.totalPrice * (1 - bookingState.discountApplied / 100);
     ui.totalEl.textContent = discounted.toFixed(2);
   }
+
+
 
   function getOccupiedSeats() {
     const filmParams = urlParams.getAll('film');
