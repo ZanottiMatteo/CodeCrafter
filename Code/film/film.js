@@ -56,3 +56,44 @@ document.addEventListener('DOMContentLoaded', () => {
     carousel.dispatchEvent(new Event('scroll'));
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const startDateInput = document.getElementById('start-date');
+  const endDateInput = document.getElementById('end-date');
+  const form = document.querySelector('.search-form');
+
+  if (startDateInput && endDateInput) {
+    startDateInput.addEventListener('change', function () {
+      endDateInput.min = this.value || endDateInput.getAttribute('min') || '';
+      if (endDateInput.value && endDateInput.value < this.value) {
+        endDateInput.value = '';
+      }
+    });
+
+    endDateInput.addEventListener('change', function () {
+      if (startDateInput.value && this.value < startDateInput.value) {
+        showCustomAlert('error', 'Data non valida', 'La data finale non può essere precedente a quella iniziale.');
+        this.value = '';
+        this.focus();
+      }
+    });
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        if (
+          startDateInput.value &&
+          endDateInput.value &&
+          endDateInput.value < startDateInput.value
+        ) {
+          showCustomAlert('error', 'Data non valida', 'La data finale non può essere precedente a quella iniziale.');
+          e.preventDefault();
+        }
+      });
+    }
+  }
+});
+
+function showCustomAlert(icon, title, text = '') {
+  Swal.fire({ icon, title, text, toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
+}
+

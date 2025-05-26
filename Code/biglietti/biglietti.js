@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   const urlParams = new URLSearchParams(window.location.search);
+  const date = urlParams.get('date');
+  const orarioInUrl = urlParams.get('orario');
+  const salaInUrl = urlParams.get('sala');
+  const filmParams = urlParams.getAll('film');
+  const filmId = filmParams[filmParams.length - 1];
 
   const SEAT_TYPES = {
     VIP: { price: 18, class: 'vip' },
@@ -37,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
     applyPromo: document.querySelector('.apply-promo'),
     checkoutBtn: document.querySelector('.checkout-button')
   };
+
+  disablePastTimesIfToday();
 
   function updateSteps(targetStep) {
     if (targetStep > bookingState.maxStep) {
@@ -236,8 +243,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ui.totalEl.textContent = discounted.toFixed(2);
   }
 
-
-
   function getOccupiedSeats() {
     const filmParams = urlParams.getAll('film');
     const filmId = filmParams.length ? filmParams[filmParams.length - 1] : null;
@@ -259,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // promo
   ui.applyPromo.addEventListener('click', () => {
     const code = ui.promoInput.value.toUpperCase();
     const disc = PROMO_CODES[code] || 0;
@@ -273,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // checkout
   ui.checkoutBtn.addEventListener('click', () => {
     if (!bookingState.selectedTime || bookingState.selectedSeats.length === 0) {
       showCustomAlert('warning', 'Completa tutti i passaggi!', 'Seleziona orario e posti');
@@ -396,7 +399,36 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // helpers
+  function disablePastTimesIfToday() {
+    const selectedDate = date;
+    if (!selectedDate) return;
+
+    const [gg, mm, aaaa] = selectedDate.split('/');
+
+    const today = new Date();
+    const isToday =
+      today.getDate() === +gg &&
+      today.getMonth() === +mm - 1 &&
+      today.getFullYear() === +aaaa;
+
+    if (isToday) {
+      const nowMinutes = today.getHours() * 60 + today.getMinutes();
+
+      ui.timeSlots.forEach(slot => {
+        const timeStr = slot.getAttribute('data-time');
+        if (timeStr) {
+          const [hh, min] = timeStr.split(':').map(Number);
+          const slotMinutes = hh * 60 + min;
+          if (slotMinutes <= nowMinutes) {
+            slot.classList.add('disabled');
+            slot.style.pointerEvents = 'none';
+            slot.style.opacity = 0.4;
+          }
+        }
+      });
+    }
+  }
+
   function animateElements(selector, animation) {
     document.querySelectorAll(selector).forEach(el => {
       el.style.animation = `${animation} 0.5s ease-out`;
@@ -408,11 +440,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   caricaSalaEGeneraPosti();
-  const orarioInUrl = urlParams.get('orario');
-  const salaInUrl = urlParams.get('sala');
-  const date = urlParams.get('date');
-  const filmParams = urlParams.getAll('film');
-  const filmId = filmParams[filmParams.length - 1];
 
   if (orarioInUrl && salaInUrl && filmId && date) {
     ui.timeSlots.forEach(slot => {

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../nav_header_footer/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="film.js"></script>
   <script src="../nav_header_footer/nav.js"></script>
 </head>
@@ -27,12 +27,13 @@
         <form class="search-form" method="get" action="">
           <div class="form-group">
             <label for="start-date"><i class="far fa-calendar-alt"></i>Data iniziale:</label>
-            <input type="date" id="start-date" name="start-date"
+            <input type="date" id="start-date" name="start-date" min="2021-01-01" max="2025-12-31"
               value="<?= htmlspecialchars($_GET['start-date'] ?? '') ?>">
           </div>
           <div class="form-group">
             <label for="end-date"><i class="far fa-calendar-alt"></i>Data finale:</label>
-            <input type="date" id="end-date" name="end-date" value="<?= htmlspecialchars($_GET['end-date'] ?? '') ?>">
+            <input type="date" id="end-date" name="end-date" min="2021-01-01" max="2025-12-31"
+              value="<?= htmlspecialchars($_GET['end-date'] ?? '') ?>">
           </div>
           <button type="submit" class="btn-search1"><i class="fas fa-search"></i></button>
         </form>
@@ -105,17 +106,25 @@
               $imgUrl = htmlspecialchars($filmData['imgUrl']);
               $urlDate = urlencode($date);
 
-              echo '
-              <article class="movie-card">
+              echo '<article class="movie-card">';
+
+              $today = (new DateTime())->setTime(0, 0, 0);
+              $filmDay = DateTime::createFromFormat('d/m/Y', $date);
+
+              if ($filmDay && $filmDay >= $today) {
+                echo '
                 <a href="../biglietti/biglietti.php?film=' . $filmCodice . '&date=' . $urlDate . '" class="ticket-btn" title="Acquista biglietto">
                   <img src="https://cdn-icons-png.flaticon.com/128/3702/3702886.png" alt="Ticket" class="ticket-icon">
                 </a>
+              ';
+              }
 
-                <div class="movie-poster" style="background-image: url(\'' . $imgUrl . '\')"></div>
-                <div class="movie-info">
-                    <h2>' . $titolo . '</h2>
-                </div>
-              </article>';
+              echo '
+              <div class="movie-poster" style="background-image: url(\'' . $imgUrl . '\')"></div>
+              <div class="movie-info">
+                  <h2>' . $titolo . '</h2>
+              </div>
+            </article>';
             }
 
             echo '</div>';
@@ -132,9 +141,9 @@
     </div>
   </div>
   <?php
-    include '../nav_header_footer/footer.html';
-    ?>
-    <script src="../nav_header_footer/footer.js"></script>
+  include '../nav_header_footer/footer.html';
+  ?>
+  <script src="../nav_header_footer/footer.js"></script>
 </body>
 
 </html>

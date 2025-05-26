@@ -31,14 +31,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
                 });
 
+                const today = new Date().toISOString().split('T')[0];
+
                 if (!dataSelect._flatpickr) {
                     flatpickr("#data", {
                         enable: formattedDates,
+                        minDate: today,
+                        maxDate: "2025-12-31",
                         dateFormat: "Y-m-d",
                         locale: "it"
                     });
                 } else {
                     dataSelect._flatpickr.set("enable", formattedDates);
+                    dataSelect._flatpickr.set("minDate", today);
+                    dataSelect._flatpickr.set("maxDate", "2025-12-31");
                 }
                 dataSelect.disabled = false;
                 updateSubmitState();
@@ -187,6 +193,40 @@ document.addEventListener("DOMContentLoaded", function () {
         if (raw) {
             const [year, month, day] = raw.split('-');
             dataSelect.value = `${day}/${month}/${year}`;
+        }
+
+        const selectedDate = raw;
+        const orarioInput = document.querySelector('select[name="orario"], #orario, #orario-select'); 
+        const salaDiv = document.getElementById('sala');
+        const selectedTime = orarioInput ? orarioInput.value : null;
+        const bigliettiLink = document.getElementById('biglietti-link');
+
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const nowTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        if (
+            selectedDate === todayStr &&
+            selectedTime &&
+            selectedTime < nowTime
+        ) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Orario non valido',
+                text: 'Non puoi selezionare un orario già passato.',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+            });
+            e.preventDefault();
+            localStorage.removeItem('bigliettiAttivo');
+            dataSelect.value = '';
+            if (orarioInput) orarioInput.value = '';
+            if (salaDiv) salaDiv.innerHTML = '';
+            if (bigliettiLink) bigliettiLink.classList.add('disabled-link');
+            updateSubmitState();
+            return false;
         }
     });
 });
