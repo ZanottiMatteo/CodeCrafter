@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $isLoggedIn = isset($_SESSION['user_id']);
 $nomeUtente = $_SESSION['nome'] ?? '';
+$mailUtente = $_SESSION['mail'] ?? '';
 ?>
 
 <header class="main-header">
@@ -24,4 +25,9 @@ $nomeUtente = $_SESSION['nome'] ?? '';
       <?php endif; ?>
     </div>
   </div>
+  <?php if ($isLoggedIn && !empty($mailUtente)): ?>
+    <script>
+      window.userMail = <?= json_encode($mailUtente); ?>;
+    </script>
+  <?php endif; ?>
 </header>

@@ -75,6 +75,21 @@ window.addEventListener('beforeunload', (e) => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const dbLink = document.getElementById("database-link");
+    if (dbLink) {
+        dbLink.classList.add("disabled-link");
+        dbLink.setAttribute("href", "#");
+    }
+
+    if (typeof window.userMail !== "undefined") {
+        if (window.userMail === "admin@gmail.com") {
+            dbLink.classList.remove("disabled-link");
+            dbLink.setAttribute("href", "../database/database.php");
+        }
+    }
+});
+
 
 
 

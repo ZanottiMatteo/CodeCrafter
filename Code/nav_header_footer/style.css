@@ -140,7 +140,6 @@ body {
   margin-left: 270px;
 }
 
-
 nav ul li {
   display: grid;
   margin-top: 15px;
@@ -158,7 +157,6 @@ nav ul li a {
   align-items: center;
   text-decoration: none;
 }
-
 
 nav ul li:hover {
   background-color: var(--primary-color-lighter);
