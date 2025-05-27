@@ -9,7 +9,7 @@ $mailUtente = $_SESSION['mail'] ?? '';
 
 <header class="main-header">
   <div class="header-content">
-    <h1 class="logo">Code<span>Crafter</span></h1>
+    <h1 class="logo">Code<span>Crafters</span></h1>
     <div class="user-actions">
       <?php if ($isLoggedIn): ?>
         <div class="user-area">

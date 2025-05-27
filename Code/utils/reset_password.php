@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codecrafter - Login / Signup</title>
+    <title>Codecrafters - Login / Signup</title>
     <link rel="icon" href="Icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="reset_password.css">
     <link rel="stylesheet" href="../nav_header_footer/style.css">
