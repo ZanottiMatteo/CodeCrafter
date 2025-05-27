@@ -51,6 +51,14 @@ $isAdmin = (isset($_SESSION['mail']) && $_SESSION['mail'] === 'admin@gmail.com')
                     "Utente" => ["id", "mail", "password", "nome", "reset_token", "reset_expire"]
                 ];
 
+                $pks = [
+                    'Biglietto' => 'id',
+                    'Film' => 'codice',
+                    'Proiezione' => 'numProiezione',
+                    'Sala' => 'numero',
+                    'Utente' => 'id'
+                ];
+
                 foreach ($tables as $table => $columns) {
                     echo "<div class='db-table-container' id='tab-$table' style='display: none;'>";
                     echo "<h2 class='db-title'>Tabella $table</h2>";
@@ -61,29 +69,36 @@ $isAdmin = (isset($_SESSION['mail']) && $_SESSION['mail'] === 'admin@gmail.com')
                     if ($stmt && $stmt->rowCount() > 0) {
                         echo "<div class='db-table-wrap'><table class='db-table'>";
                         echo "<tr>";
-                        foreach ($columns as $col)
+                        foreach ($columns as $col) {
                             echo "<th>$col</th>";
-                        echo "<th></th>";
-                        echo "</tr>";
+                        }
+                        echo "<th></th></tr>";
 
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "<tr>";
-                            foreach ($columns as $col)
+                            foreach ($columns as $col) {
                                 echo "<td>" . htmlspecialchars($row[$col]) . "</td>";
-                            if ($table === "Biglietto" || $table === "Utente") {
+                            }
+
+                            $pkName = $pks[$table];
+                            $idValue = htmlspecialchars($row[$pkName]);
+
+                            if (in_array($table, ['Biglietto', 'Utente'])) {
                                 echo "<td class='delete-cell'>
-                                <button class='btn-delete' title='Elimina'>
-                                    <img src='https://cdn-icons-png.flaticon.com/128/3976/3976961.png' alt='Elimina' class='delete-icon'>
+                                <button class='btn-delete' data-table='$table' data-id='$idValue' title='Elimina'>
+                                <img src='https://cdn-icons-png.flaticon.com/128/3976/3976961.png' alt='Elimina' class='delete-icon'>
                                 </button>
                             </td>";
                             }
+
                             echo "<td class='edit-cell'>
-                                <button class='btn-edit' title='Modifica'>
-                                    <img src='https://cdn-icons-png.flaticon.com/128/7175/7175385.png' alt='Modifica' class='edit-icon'>
+                                <button class='btn-edit' data-table='$table' data-id='$idValue' title='Modifica'>
+                                <img src='https://cdn-icons-png.flaticon.com/128/7175/7175385.png' alt='Modifica' class='edit-icon'>
                                 </button>
                             </td>";
                             echo "</tr>";
                         }
+
                         echo "</table></div>";
                     } else {
                         echo "<p class='db-nodata'>Nessun dato nella tabella $table.</p>";
