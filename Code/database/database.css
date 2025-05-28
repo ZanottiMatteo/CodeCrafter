@@ -233,6 +233,8 @@
     border-bottom: 2px solid #580000;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     gap: 1rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .pagination .page-left,
@@ -240,6 +242,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex-wrap: nowrap;
 }
 
 .pagination .page-btn,
@@ -263,10 +266,12 @@
     color: #580000;
     font-weight: 600;
     font-size: 1rem;
+    white-space: nowrap;
 }
 
 .pagination .page-input {
-    min-width: 4ch;
+    min-width: 3ch;
+    width: 7ch;
     padding: 0.3rem 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;

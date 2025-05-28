@@ -81,17 +81,17 @@ echo "<div class='pagination' data-total='$totalPages'>";
 echo "<div class='page-left'>";
 if ($page > 1) {
     $prev = $page - 1;
-    echo "<button class='page-btn' data-page='$prev'>&laquo; Prev</button>";
+    echo "<button class='page-btn' data-page='$prev'>Prev</button>";
 }
 echo "<span class='page-info'>Pagina $page di $totalPages</span>";
 if ($page < $totalPages) {
     $next = $page + 1;
-    echo "<button class='page-btn' data-page='$next'>Next &raquo;</button>";
+    echo "<button class='page-btn' data-page='$next'>Next</button>";
 }
 echo "</div>";
 
 echo "<div class='page-right'>";
-echo "<label class='page-jump'>Vai a:
+echo "<label class='page-jump'>
             <input type='number' class='page-input' min='1' max='$totalPages' value='$page' />
             <button class='page-go'>Go</button>
           </label>";
